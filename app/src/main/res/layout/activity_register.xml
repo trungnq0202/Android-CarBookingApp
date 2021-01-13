@@ -106,6 +106,26 @@
                 android:text="Female" />
         </RadioGroup>
 
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/registerCustomerRadioBtn"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Customer" />
+
+            <RadioButton
+                android:id="@+id/registerDriverRadioBtn"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:text="Driver" />
+        </RadioGroup>
+
         <Button
             android:id="@+id/registerFinalRegisterBtn"
             android:layout_width="wrap_content"

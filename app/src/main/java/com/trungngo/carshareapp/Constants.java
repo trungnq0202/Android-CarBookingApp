@@ -9,9 +9,9 @@ public class Constants {
         public static final String birthDateField = "birthDate";
         public static final String genderField = "gender";
         public static final String emailField = "email";
+        public static final String roleField = "role";
         public static final String ownSitesIdField = "ownSitesId";
         public static final String participatingSitesIdField = "participatingSitesId";
-        public static final String superuserField = "superuser";
     }
 
     public static class FSSite {

@@ -25,6 +25,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText birthDateEditText, usernameEditText, phoneEditText;
     Button backBtn, nextBtn, datePickerBtn;
     RadioButton maleRadioBtn, femaleRadioBtn;
+    RadioButton driverRadioBtn, customerRadioBtn;
     private int year, month, day;
 
     @Override
@@ -48,6 +49,9 @@ public class RegisterActivity extends AppCompatActivity {
         datePickerBtn = (Button) findViewById(R.id.registerPickdateBtn);
         maleRadioBtn = (RadioButton) findViewById(R.id.registerMaleRadioBtn);
         femaleRadioBtn = (RadioButton) findViewById(R.id.registerFemaleRadioBtn);
+        customerRadioBtn = (RadioButton) findViewById(R.id.registerCustomerRadioBtn);
+        driverRadioBtn = (RadioButton) findViewById(R.id.registerDriverRadioBtn);
+
     }
 
     //Move back to startActivity when pressing 'back' button
@@ -71,6 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String phone = phoneEditText.getText().toString();
                 String birthDate = birthDateEditText.getText().toString();
                 String gender = maleRadioBtn.isChecked() ? "Male" : "Female";
+                String role = customerRadioBtn.isChecked() ? "Customer" : "Driver";
 
                 //Check empty input
                 if (checkEmptyInput(username, phone, birthDate)) {
@@ -82,6 +87,7 @@ public class RegisterActivity extends AppCompatActivity {
                     i.putExtra(Constants.FSUser.phoneField, phone);
                     i.putExtra(Constants.FSUser.birthDateField, birthDate);
                     i.putExtra(Constants.FSUser.genderField, gender);
+                    i.putExtra(Constants.FSUser.roleField, role);
                     startActivity(i);
                     finish();
                 }

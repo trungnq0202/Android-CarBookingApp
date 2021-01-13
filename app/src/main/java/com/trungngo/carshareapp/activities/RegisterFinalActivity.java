@@ -33,7 +33,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
     Button backBtn, registerBtn;
     EditText emailEditText, passwordEditText;
 
-    private String username, phone, birthDate, gender;
+    private String username, phone, birthDate, gender, role;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
@@ -76,6 +76,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
         phone = (String) intent.getExtras().get(Constants.FSUser.phoneField);
         birthDate = (String) intent.getExtras().get(Constants.FSUser.birthDateField);
         gender = (String) intent.getExtras().get(Constants.FSUser.genderField);
+        role = (String) intent.getExtras().get(Constants.FSUser.roleField);
     }
 
     //Save user data to 'users' collection on firebase
@@ -97,7 +98,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
         data.put(Constants.FSUser.birthDateField, birthDateNew);
         data.put(Constants.FSUser.genderField, gender);
         data.put(Constants.FSUser.emailField, emailEditText.getText().toString());
-        data.put(Constants.FSUser.superuserField, false);
+        data.put(Constants.FSUser.roleField, role);
         data.put(Constants.FSUser.ownSitesIdField, new ArrayList<String>());
         data.put(Constants.FSUser.participatingSitesIdField, new ArrayList<String>());
 
