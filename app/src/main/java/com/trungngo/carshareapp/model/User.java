@@ -34,7 +34,7 @@ public class User {
     }
 
     public boolean isCustomer(){
-        return this.role == "Customer";
+        return this.role.equals("Customer");
     }
 
     public String getDocId() {
