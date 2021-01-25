@@ -1,5 +1,6 @@
 package com.trungngo.carshareapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.trungngo.carshareapp.model.User;
 import com.trungngo.carshareapp.ui.customer_home.CustomerHomeViewModel;
 import com.trungngo.carshareapp.ui.driver_home.DriverHomeViewModel;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
@@ -82,23 +84,50 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = findViewById(R.id.nav_view);
 
         //If this user is customer
-        if (currentUserObject.isCustomer()) {
-            mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_customer_home)
-                    .setDrawerLayout(drawer)
-                    .build();
-        } else { //If this user is driver
-            mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_driver_home)
-                    .setDrawerLayout(drawer)
-                    .build();
-        }
+//        if (currentUserObject.isCustomer()) {
+//            mAppBarConfiguration = new AppBarConfiguration.Builder(
+//                    R.id.nav_customer_home)
+//                    .setDrawerLayout(drawer)
+//                    .build();
+//        } else { //If this user is driver
+//            mAppBarConfiguration = new AppBarConfiguration.Builder(
+//                    R.id.nav_driver_home)
+//                    .setDrawerLayout(drawer)
+//                    .build();
+//        }
+
+        mAppBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.nav_customer_home, R.id.nav_driver_home)
+                .setDrawerLayout(drawer)
+                .build();
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
         navigateAndHideAccordingMenuBasedOnRole(navController);
+    }
+
+    /**
+     * Logout menu item listener (sits in 3-dots collapsing menu)
+     */
+    private void onLogoutOptionClick() {
+        mAuth.signOut();
+        Intent i = new Intent(MainActivity.this, StartActivity.class);
+        startActivity(i);
+        finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_logout:
+                onLogoutOptionClick();
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return true;
     }
 
     /**
@@ -138,6 +167,10 @@ public class MainActivity extends AppCompatActivity {
     private void navigateAndHideAccordingMenuBasedOnRole(NavController navController){
         NavigationView navigationView = findViewById(R.id.nav_view);
         Menu menu = navigationView.getMenu();
+
+        System.out.println("CCCCCCCCCCC");
+        System.out.println(currentUserObject.getRole());
+        System.out.println(currentUserObject.isCustomer());
 
         //Hide according menu and Navigate to the right fragment based on
         if (currentUserObject.isCustomer()){
