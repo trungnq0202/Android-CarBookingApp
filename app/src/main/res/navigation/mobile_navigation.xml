@@ -3,14 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_customer_home">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="com.trungngo.carshareapp.ui.home.HomeFragment"
+        android:id="@+id/nav_customer_home"
+        android:name="com.trungngo.carshareapp.ui.customer_home.CustomerHomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_customer_home" />
 
-
+    <fragment
+        android:id="@+id/nav_driver_home"
+        android:name="com.trungngo.carshareapp.ui.driver_home.DriverHomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_driver_home" />
 
 </navigation>

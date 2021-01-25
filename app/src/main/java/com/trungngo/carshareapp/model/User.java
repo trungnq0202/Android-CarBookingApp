@@ -33,6 +33,10 @@ public class User {
         this.role = role;
     }
 
+    public boolean isCustomer(){
+        return this.role == "Customer";
+    }
+
     public String getDocId() {
         return docId;
     }

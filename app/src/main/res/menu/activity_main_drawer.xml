@@ -5,9 +5,14 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
+            android:id="@+id/nav_customer_home"
             android:icon="@drawable/ic_home"
-            android:title="@string/menu_home" />
+            android:title="Customer Home" />
+
+        <item
+            android:id="@+id/nav_driver_home"
+            android:icon="@drawable/ic_home"
+            android:title="Driver Home" />
 
         <item
             android:id="@+id/nav_profile"

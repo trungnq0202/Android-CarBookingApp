@@ -12,6 +12,9 @@ public class Constants {
         public static final String roleField = "role";
         public static final String ownSitesIdField = "ownSitesId";
         public static final String participatingSitesIdField = "participatingSitesId";
+
+        public static final String roleCustomerVal = "Customer";
+        public static final String roleDriverVal = "Driver";
     }
 
     public static class FSSite {
