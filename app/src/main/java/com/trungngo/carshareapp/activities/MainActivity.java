@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main); //setup navigation drawer
-//        navigationDrawerSetup();
         linkViewElements(); //Get view elements
         initAllChildFragmentsViewModel(); //Init all child fragments viewModels
         initFirebaseCurrentUserInfo(); //Get all fireStore instances
@@ -126,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
                             currentUserObject = doc.toObject(User.class);
                             setNavHeaderEmailAndUsername(); //Set nav header username and email
                             setAllChildFragmentsViewModelData();
-//                            hideAccordingMenuBasedOnRole();
                             navigationDrawerSetup();
                         }
                     }
