@@ -3,13 +3,10 @@ package com.trungngo.carshareapp.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Menu;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,8 +18,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.trungngo.carshareapp.Constants;
 import com.trungngo.carshareapp.R;
 import com.trungngo.carshareapp.model.User;
-import com.trungngo.carshareapp.ui.customer_home.CustomerHomeViewModel;
-import com.trungngo.carshareapp.ui.driver_home.DriverHomeViewModel;
+import com.trungngo.carshareapp.ui.customer.home.CustomerHomeViewModel;
+import com.trungngo.carshareapp.ui.driver.home.DriverHomeViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

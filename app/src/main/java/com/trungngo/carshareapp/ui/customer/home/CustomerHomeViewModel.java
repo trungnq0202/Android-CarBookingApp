@@ -1,16 +1,15 @@
-package com.trungngo.carshareapp.ui.driver_home;
+package com.trungngo.carshareapp.ui.customer.home;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.trungngo.carshareapp.model.User;
 
-public class DriverHomeViewModel extends ViewModel {
+public class CustomerHomeViewModel extends ViewModel {
     private MutableLiveData<User> currentUserObject;
 
 
-    public DriverHomeViewModel() {
+    public CustomerHomeViewModel() {
         currentUserObject = new MutableLiveData<>();
     }
 

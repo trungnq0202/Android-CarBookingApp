@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.customer_home.CustomerHomeFragment">
+    tools:context=".ui.customer.home.CustomerHomeFragment"
+    android:background="@drawable/gradient_background">
 
     <TextView
         android:id="@+id/text_home"
@@ -28,9 +29,7 @@
         android:layout_height="match_parent"
         android:gravity="center|bottom"
         android:orientation="vertical"
-        android:background="@drawable/gradient_background">
-
-
+        >
 
         <LinearLayout
             android:id="@+id/bike_layout"
