@@ -99,8 +99,6 @@ public class RegisterFinalActivity extends AppCompatActivity {
         data.put(Constants.FSUser.genderField, gender);
         data.put(Constants.FSUser.emailField, emailEditText.getText().toString());
         data.put(Constants.FSUser.roleField, role);
-        data.put(Constants.FSUser.ownSitesIdField, new ArrayList<String>());
-        data.put(Constants.FSUser.participatingSitesIdField, new ArrayList<String>());
 
         db.collection(Constants.FSUser.userCollection).add(data);
     }

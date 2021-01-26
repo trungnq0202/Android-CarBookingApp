@@ -1,14 +1,16 @@
-package com.trungngo.carshareapp.ui.customer.booking;
+package com.trungngo.carshareapp.ui.customer.booking.pickup;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.trungngo.carshareapp.model.User;
 
-public class BookingViewModel extends ViewModel {
+public class PickupViewModel extends ViewModel {
+    // TODO: Implement the ViewModel
     private MutableLiveData<User> currentUserObject;
 
-    public BookingViewModel() {
+
+    public PickupViewModel() {
         currentUserObject = new MutableLiveData<>();
     }
 
