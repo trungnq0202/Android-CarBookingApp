@@ -13,4 +13,8 @@
     <string name="menu_slideshow">Slideshow</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_pick_up">PICK UP</string>
+    <string name="text_drop_off">DROP OFF</string>
+    <string name="btn_message">Message</string>
+    <string name="btn_call">Call</string>
 </resources>
