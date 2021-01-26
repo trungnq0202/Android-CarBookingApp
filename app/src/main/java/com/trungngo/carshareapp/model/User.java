@@ -14,22 +14,18 @@ public class User {
     private Date birthDate;
     private String gender;
     private String email;
-    private List<String> ownSitesId;
-    private List<String> participatingSitesId;
     private String role;
 
     public User() {
     }
 
-    public User(String docId, String username, String phone, Date birthDate, String gender, String email, List<String> ownSitesId, List<String> participatingSitesId, String role) {
+    public User(String docId, String username, String phone, Date birthDate, String gender, String email, String role) {
         this.docId = docId;
         this.username = username;
         this.phone = phone;
         this.birthDate = birthDate;
         this.gender = gender;
         this.email = email;
-        this.ownSitesId = ownSitesId;
-        this.participatingSitesId = participatingSitesId;
         this.role = role;
     }
 
@@ -83,22 +79,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public List<String> getOwnSitesId() {
-        return ownSitesId;
-    }
-
-    public void setOwnSitesId(List<String> ownSitesId) {
-        this.ownSitesId = ownSitesId;
-    }
-
-    public List<String> getParticipatingSitesId() {
-        return participatingSitesId;
-    }
-
-    public void setParticipatingSitesId(List<String> participatingSitesId) {
-        this.participatingSitesId = participatingSitesId;
     }
 
     public String getRole() {

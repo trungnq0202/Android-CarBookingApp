@@ -1,6 +1,12 @@
 package com.trungngo.carshareapp;
 
 public class Constants {
+    public static class TransportationType{
+        public static final String carType = "car";
+        public static final String bikeType = "bike";
+
+    }
+
     //Fields of FireStore 'users' collection
     public static class FSUser {
         public static final String userCollection = "users";
