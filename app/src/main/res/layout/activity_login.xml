@@ -61,8 +61,8 @@
         android:ems="10"
         android:hint="Email"
         android:inputType="text"
-        android:text="trungnguyen@gmail.com"
         android:padding="16dp"
+        android:text="tminhquang00@gmail.com"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view2" />
@@ -79,9 +79,9 @@
         android:drawablePadding="16dp"
         android:ems="10"
         android:hint="Password"
-        android:text="trungnguyen1234"
         android:inputType="textPassword"
         android:padding="16dp"
+        android:text="123456"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loginEmailEditText" />
@@ -118,7 +118,7 @@
         app:layout_constraintTop_toBottomOf="@+id/loginLoginBtn" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/text_paymentMethods"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -142,7 +142,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toBottomOf="@+id/text_paymentMethods" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

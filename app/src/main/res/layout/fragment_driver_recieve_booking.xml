@@ -34,7 +34,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@color/light_gray"
+                        android:background="@color/darker_gray"
                         android:gravity="center"
                         android:padding="10dp"
                         android:text="@string/text_pick_up"
@@ -49,7 +49,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@color/darker_gray"
+                        android:background="@color/light_gray"
                         android:gravity="center"
                         android:text="@string/text_drop_off"
                         android:textAllCaps="true"
@@ -127,12 +127,12 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <FrameLayout
-            android:id="@+id/map_fragment"
+        <fragment
+            android:id="@+id/fragment_maps"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1">
-        </FrameLayout>
+            android:layout_weight="1" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -159,7 +159,7 @@
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="100dp"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="50dp"
+                        android:layout_marginRight="40dp"
                         android:layout_weight="0"
                         android:drawableTop="@drawable/ic_call"
                         android:text="@string/btn_call"
@@ -172,7 +172,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="50dp"
                         android:layout_weight="0"
-                        android:drawableTop="@drawable/ic_email"
+                        android:drawableTop="@drawable/ic_email_white"
                         android:text="@string/btn_message"
                         android:textSize="8sp" />
 
@@ -187,7 +187,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="4dp"
                     android:backgroundTint="@color/green"
-                    android:text="Pick Up"
+                    android:text="I have arrived"
                     android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>

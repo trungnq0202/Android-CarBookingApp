@@ -23,12 +23,17 @@
             android:backgroundTint="@color/light_gray"
             app:srcCompat="@drawable/ic_on_off_button" />
 
-        <FrameLayout
-            android:id="@+id/map_fragment"
+        <!--    <FrameLayout-->
+        <!--        android:layout_width="wrap_content"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:id=""-->
+
+        <fragment
+            android:id="@+id/fragment_maps"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1">
-        </FrameLayout>
+            android:layout_weight="1" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -56,6 +61,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_weight="0"
                     android:background="@color/light_gray"
                     android:orientation="horizontal">
 
@@ -93,31 +99,19 @@
 
                     </LinearLayout>
 
-                    <LinearLayout
+
+                    <TextView
+                        android:id="@+id/text_rating"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:drawableTop="@drawable/ic_star"
                         android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="15dp">
+                        android:padding="15dp"
+                        android:text="4.63"
+                        android:textColor="@color/green"
+                        android:textStyle="bold" />
 
-                        <ImageView
-                            android:id="@+id/imageView3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            tools:srcCompat="@drawable/ic_star" />
-
-                        <TextView
-                            android:id="@+id/text_rating"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="4.63"
-                            android:textColor="@color/green"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
 
                 </LinearLayout>
             </LinearLayout>

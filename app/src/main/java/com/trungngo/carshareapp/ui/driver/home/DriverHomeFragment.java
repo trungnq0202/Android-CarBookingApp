@@ -1,5 +1,7 @@
 package com.trungngo.carshareapp.ui.driver.home;
 
+import android.app.AlertDialog;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,9 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.trungngo.carshareapp.R;
+import com.trungngo.carshareapp.activities.MainActivity;
 import com.trungngo.carshareapp.ui.customer.home.CustomerHomeViewModel;
 import com.trungngo.carshareapp.ui.driver.alert.DriverAlertFragment;
 
@@ -26,7 +31,7 @@ public class DriverHomeFragment extends Fragment {
     private TextView driverCompletedDrives;
     private TextView driverCompletedRatio;
     private TextView driverRating;
-    private Button btnActive;
+    private ImageButton btnActive;
 
 
     /**
@@ -44,10 +49,11 @@ public class DriverHomeFragment extends Fragment {
     /**
      * Show the driver alert dialog
      */
-    private void showEditDialog() {
+    private void showNotifyBookingDialog() {
         FragmentManager fm = getChildFragmentManager();
         DriverAlertFragment driverAlertFragment = DriverAlertFragment.newInstance();
         driverAlertFragment.show(fm, "fragment_notify_booking");
+
     }
 
     @Override
@@ -63,5 +69,12 @@ public class DriverHomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        btnActive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showNotifyBookingDialog();
+            }
+        });
     }
 }

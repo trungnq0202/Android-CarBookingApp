@@ -17,4 +17,10 @@
     <string name="text_drop_off">DROP OFF</string>
     <string name="btn_message">Message</string>
     <string name="btn_call">Call</string>
+    <string name="btn_confirm_state">I have arrived</string>
+    <string name="btn_pickup_state">Pick Up</string>
+    <string name="btn_dropoff_state"> Drop Off</string>
+    <string name="btn_checkout_state"> Check Out</string>
+
+
 </resources>
