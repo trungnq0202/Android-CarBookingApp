@@ -16,13 +16,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
-            android:id="@+id/btn_active"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/light_gray"
-            app:srcCompat="@drawable/ic_on_off_button" />
-
         <!--    <FrameLayout-->
         <!--        android:layout_width="wrap_content"-->
         <!--        android:layout_height="wrap_content"-->

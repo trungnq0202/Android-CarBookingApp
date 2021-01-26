@@ -31,7 +31,6 @@ public class DriverHomeFragment extends Fragment {
     private TextView driverCompletedDrives;
     private TextView driverCompletedRatio;
     private TextView driverRating;
-    private ImageButton btnActive;
 
 
     /**
@@ -43,7 +42,6 @@ public class DriverHomeFragment extends Fragment {
         driverCompletedDrives = rootView.findViewById(R.id.text_completed);
         driverCompletedRatio = rootView.findViewById(R.id.text_completed_ratio);
         driverRating = rootView.findViewById(R.id.text_rating);
-        btnActive = rootView.findViewById(R.id.btn_active);
     }
 
     /**
@@ -70,11 +68,6 @@ public class DriverHomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        btnActive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showNotifyBookingDialog();
-            }
-        });
+        showNotifyBookingDialog();
     }
 }
