@@ -10,7 +10,9 @@
     <color name="sky_blue">#0099ff</color>
     <color name="navy_blue">#0f4c81</color>
     <color name="light_teal">#52e5e5</color>
+    <color name="light_gray">#303a4a</color>
+    <color name="darker_gray">#292d3d</color>
     <color name="blue">#045ecc</color>
     <color name="red">#eb1405</color>
-
+    <color name="green">#11cc04</color>
 </resources>
