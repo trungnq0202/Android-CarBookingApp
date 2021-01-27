@@ -24,6 +24,7 @@ import com.trungngo.carshareapp.ui.customer.booking.dropoff.DropoffViewModel;
 import com.trungngo.carshareapp.ui.customer.booking.pickup.PickupViewModel;
 import com.trungngo.carshareapp.ui.customer.home.CustomerHomeViewModel;
 import com.trungngo.carshareapp.ui.driver.home.DriverHomeViewModel;
+import com.trungngo.carshareapp.ui.user_profile.UserProfileViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     PickupViewModel pickupViewModel;
     BookingViewModel bookingViewModel;
     CheckoutViewModel checkoutViewModel;
+    UserProfileViewModel userProfileViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +92,8 @@ public class MainActivity extends AppCompatActivity {
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_customer_home,
-                R.id.nav_driver_home)
+                R.id.nav_driver_home,
+                R.id.nav_profile)
                 .setDrawerLayout(drawer)
                 .build();
 
@@ -183,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
         pickupViewModel = ViewModelProviders.of(this).get(PickupViewModel.class);
         bookingViewModel = ViewModelProviders.of(this).get(BookingViewModel.class);
         checkoutViewModel = ViewModelProviders.of(this).get(CheckoutViewModel.class);
+        userProfileViewModel = ViewModelProviders.of(this).get(UserProfileViewModel.class);
     }
 
     /**
@@ -205,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
         dropoffViewModel.setCurrentUserObject(currentUserObject);
         pickupViewModel.setCurrentUserObject(currentUserObject);
         bookingViewModel.setCurrentUserObject(currentUserObject);
-
+        userProfileViewModel.setCurrentUserObject(currentUserObject);
     }
 
     @Override

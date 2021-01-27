@@ -41,12 +41,12 @@ public class RegisterActivity extends AppCompatActivity {
 
     //Get View variables from xml id
     private void linkViewElements() {
-        birthDateEditText = (EditText) findViewById(R.id.registerBirthEditText);
+        birthDateEditText = (EditText) findViewById(R.id.editText_DOB);
         usernameEditText = (EditText) findViewById(R.id.registerUsernameEditText);
         phoneEditText = (EditText) findViewById(R.id.registerPhoneEditText);
         backBtn = (Button) findViewById(R.id.registerBackBtn);
         nextBtn = (Button) findViewById(R.id.registerFinalRegisterBtn);
-        datePickerBtn = (Button) findViewById(R.id.registerPickdateBtn);
+        datePickerBtn = (Button) findViewById(R.id.btn_pickDate);
         maleRadioBtn = (RadioButton) findViewById(R.id.registerMaleRadioBtn);
         femaleRadioBtn = (RadioButton) findViewById(R.id.registerFemaleRadioBtn);
         customerRadioBtn = (RadioButton) findViewById(R.id.registerCustomerRadioBtn);

@@ -64,7 +64,7 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/registerBirthEditText"
+                android:id="@+id/editText_DOB"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginRight="10sp"
@@ -78,7 +78,7 @@
                 />
 
             <Button
-                android:id="@+id/registerPickdateBtn"
+                android:id="@+id/btn_pickDate"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:backgroundTint="#5AC8FA"
