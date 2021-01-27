@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="6dp"
     android:id="@+id/pickup"
-    android:layout_alignParentBottom="true"
+
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
@@ -16,8 +16,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Enter Your Pick Up Location"
-            android:drawableStart="@drawable/ic_location"
+            android:text="Where do you want to go?"
+            android:drawableStart="@drawable/ic_location_blue"
             tools:background="@drawable/rounded_edit_text"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
