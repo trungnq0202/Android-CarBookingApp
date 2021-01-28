@@ -33,6 +33,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -349,6 +350,15 @@ public class UserProfileFragment extends Fragment {
                                     Toast.makeText(getActivity().getApplicationContext(),
                                             "User profile updates",
                                             Toast.LENGTH_LONG).show();
+                                    db.collection(Constants.FSUser.userCollection).document(currentUserObject.getDocId())
+                                            .get()
+                                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                    mViewModel.setCurrentUserObject(documentSnapshot.toObject(User.class));
+                                                }
+                                            });
+
                                 } else {
 
                                 }
