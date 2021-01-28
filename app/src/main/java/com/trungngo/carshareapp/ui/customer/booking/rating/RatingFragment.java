@@ -60,6 +60,10 @@ public class RatingFragment extends DialogFragment {
         return new RatingFragment();
     }
 
+    /**
+     * Link view elements from xml file
+     * @param view
+     */
     private void linkViewElements(View view) {
         mRatingBar = view.findViewById(R.id.rating_bar);
         mRatingScale = view.findViewById(R.id.rating_scale_text_view);
@@ -120,6 +124,9 @@ public class RatingFragment extends DialogFragment {
         return view;
     }
 
+    /**
+     * Set profile image
+     */
     private void setProfileImage(){
         db.collection(Constants.FSUser.userCollection)
                 .whereEqualTo(Constants.FSUser.emailField, driver.getEmail())

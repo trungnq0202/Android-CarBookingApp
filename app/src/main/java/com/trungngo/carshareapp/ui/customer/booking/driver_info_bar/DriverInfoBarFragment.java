@@ -65,7 +65,10 @@ public class DriverInfoBarFragment extends Fragment {
         mStorageRef = FirebaseStorage.getInstance().getReference();
         return view;
     }
-
+    /**
+     * Link view elements from xml file
+     * @param rootView
+     */
     private void linkViewElement(View rootView) {
         driverUsernameTextView = rootView.findViewById(R.id.driverUsernameTextView);
         plateNumberTextView = rootView.findViewById(R.id.plateNumberTextView);
@@ -74,6 +77,10 @@ public class DriverInfoBarFragment extends Fragment {
         profileImage = rootView.findViewById(R.id.profile_avatar);
     }
 
+    /**
+     * Render driver information
+     * @param driver
+     */
     private void setDriverInfo(User driver) {
         driverUsernameTextView.setText(driver.getUsername());
         plateNumberTextView.setText(driver.getVehiclePlateNumber());
@@ -82,7 +89,11 @@ public class DriverInfoBarFragment extends Fragment {
         setProfileImage();
     }
 
+    /**
+     * Get driver profile image
+     */
     private void setProfileImage() {
+        // Retrieve driver information
         db.collection(Constants.FSUser.userCollection)
                 .whereEqualTo(Constants.FSUser.emailField, driver.getEmail())
                 .get()
@@ -93,6 +104,7 @@ public class DriverInfoBarFragment extends Fragment {
                             User driver = doc.toObject(User.class);
 
 //                            assert driver != null;
+                            // Get image URI
                             StorageReference fref = mStorageRef.child("profileImages").child(driver.getDocId() + ".jpeg");
 
                             fref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -112,6 +124,11 @@ public class DriverInfoBarFragment extends Fragment {
 
     }
 
+    /**
+     * Get driver avg rating
+     * @param driver
+     * @return avgRating
+     */
     public float getRatingAverage(User driver) {
         double total = 0;
         for (int _rating : driver.getRating()) {

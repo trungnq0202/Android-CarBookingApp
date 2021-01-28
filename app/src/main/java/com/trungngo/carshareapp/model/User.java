@@ -5,6 +5,9 @@ import com.google.firebase.firestore.DocumentId;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Data model for user
+ */
 public class User {
 
     @DocumentId

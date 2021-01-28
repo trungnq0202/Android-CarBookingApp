@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.trungngo.carshareapp.model.User;
 
+/**
+ * View model for DropOffFragment
+ */
 public class DropoffViewModel extends ViewModel {
     private MutableLiveData<User> currentUserObject;
 

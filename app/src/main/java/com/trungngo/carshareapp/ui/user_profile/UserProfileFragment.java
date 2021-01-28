@@ -350,15 +350,6 @@ public class UserProfileFragment extends Fragment {
                                     Toast.makeText(getActivity().getApplicationContext(),
                                             "User profile updates",
                                             Toast.LENGTH_LONG).show();
-                                    db.collection(Constants.FSUser.userCollection).document(currentUserObject.getDocId())
-                                            .get()
-                                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                @Override
-                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                    mViewModel.setCurrentUserObject(documentSnapshot.toObject(User.class));
-                                                }
-                                            });
-
                                 } else {
 
                                 }

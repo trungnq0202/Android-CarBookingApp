@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.trungngo.carshareapp.model.User;
 
+/**
+ * View model for CheckoutFragment
+ */
 public class CheckoutViewModel extends ViewModel {
     private MutableLiveData<User> currentUserObject;
     private MutableLiveData<String> transportationType;

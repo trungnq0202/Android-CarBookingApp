@@ -198,6 +198,9 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         setRestartBtnHandler();
     }
 
+    /**
+     * Set event listener for restart btn
+     */
     private void setRestartBtnHandler() {
         restartBookingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -207,6 +210,9 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
+    /**
+     * Reset booking
+     */
     private void resetBookingFlow() {
         //Remove listener to driver driver marker
         removeListenerForDrawingDriverMarker();
@@ -222,6 +228,9 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         restartBookingBtn.setVisibility(View.GONE);
     }
 
+    /**
+     * Remove all the marker existing in the map fragment
+     */
     private void removeAllMarkers() {
         //Clear pickup/drop-off markers if exists
         if (currentPickupLocationMarker != null) {
@@ -242,6 +251,9 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
+    /**
+     * Load drop-off picker fragment
+     */
     private void loadDropOffPlacePickerFragment() {
         //Load drop-off picker fragment
         DropoffFragment dropoffFragment = new DropoffFragment();
@@ -249,18 +261,26 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         transaction.replace(R.id.booking_info, dropoffFragment).commit();
     }
 
+    /**
+     * Load pick up picker fragment
+     */
     private void loadPickupPlacePickerFragment() {
         PickupFragment pickupFragment = new PickupFragment();
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.booking_info, pickupFragment).commit();
     }
 
+    /**
+     * Load checkout fragment
+     */
     private void loadCheckoutFragment() {
         CheckoutFragment checkoutFragment = new CheckoutFragment();
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.booking_info, checkoutFragment).commit();
     }
-
+    /**
+     * Draw marker on dropoff and pickup map fragment
+     */
     private void drawDropOffAndPickupMarkers() {
         currentPickupLocationMarker = mMap.addMarker(new MarkerOptions()
                 .position(Objects.requireNonNull(customerPickupPlace.getLatLng()))
@@ -288,6 +308,9 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), 200));
     }
 
+    /**
+     * Draw route from pickup location to drop off location on the map fragment
+     */
     private void drawRouteFromPickupToDropOff() {
         // Checks, whether start and end locations are captured
         // Getting URL to the Google Directions API
@@ -452,6 +475,9 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         onGetPositionClick();  // Position the map.
     }
 
+    /**
+     * Clear the route in the map
+     */
     private void removeCurrentRoute() {
         //Clear current route
         if (currentRoute.isEmpty()) return;
@@ -461,6 +487,9 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         currentRoute.clear();
     }
 
+    /**
+     * Sent the required data to checkout fragment
+     */
     @SuppressLint("DefaultLocale")
     private void sendCheckoutInfoToCheckoutFragment() {
         CheckoutViewModel checkoutViewModel = ViewModelProviders.of(requireActivity()).get(CheckoutViewModel.class);
@@ -490,7 +519,9 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         mViewModel.setFeedBackRating(null);
     }
 
-
+    /**
+     * Send data to ProcessBookingViewModel
+     */
     private void sendDataToProcessBookingViewModel() {
         ProcessingBookingViewModel processingBookingViewModel = ViewModelProviders.of(requireActivity()).get(ProcessingBookingViewModel.class);
         processingBookingViewModel.setDropOffPlaceString(customerDropOffPlace.getName());
@@ -610,6 +641,9 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
     }
 
     /*************************************************** For booking synchronization *****************************************************/
+    /**
+     * Load process booking fragment
+     */
     private void loadProcessingBookingFragment() {
         //Load drop-off picker fragment
         ProcessingBookingFragment processingBookingFragment = new ProcessingBookingFragment();
@@ -617,6 +651,9 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         transaction.replace(R.id.booking_info, processingBookingFragment).commit();
     }
 
+    /**
+     * Load DriverInfoBarFragment
+     */
     private void loadDriverInfoBarFragment() {
         //Load driver info bar fragment
         DriverInfoBarFragment driverInfoBarFragment = new DriverInfoBarFragment();
@@ -624,18 +661,27 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         transaction.replace(R.id.booking_info, driverInfoBarFragment).commit();
     }
 
+    /**
+     * load PopupFounderDriverInfo
+     */
     private void loadPopupFoundedDriverInfo() {
         FragmentManager fm = getChildFragmentManager();
         PopupDriverInfoFragment popupDriverInfoFragment = PopupDriverInfoFragment.newInstance();
         popupDriverInfoFragment.show(fm, "fragment_notify_founded_driver");
     }
 
+    /**
+     * Load PopupDriverArrivalFragment
+     */
     private void loadPopupDriverArrivalFragment() {
         FragmentManager fm = getChildFragmentManager();
         PopupDriverArrivalFragment popUpDriverArrivalFragment = PopupDriverArrivalFragment.newInstance();
         popUpDriverArrivalFragment.show(fm, "fragment_notify_driver_arrived");
     }
 
+    /**
+     * load RatingFragment
+     */
     private void loadCustomerRatingFragment() {
         //Load customer rating fragment
 //        RatingFragment ratingFragment = new RatingFragment();
@@ -646,6 +692,9 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         ratingFragment.show(fm, "fragment_feedback_rating");
     }
 
+    /**
+     * Create booking in db
+     */
     private void createNewBookingInDB() {
         Map<String, Object> data = new HashMap<>();
         data.put(Constants.FSBooking.pickupPlaceAddress, customerPickupPlace.getAddress());
@@ -681,21 +730,33 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
                 });
     }
 
+    /**
+     * send data to driverInfoBarViewModel
+     */
     private void sendDataToInfoBarViewModel() {
         DriverInfoBarViewModel driverInfoBarViewModel = ViewModelProviders.of(requireActivity()).get(DriverInfoBarViewModel.class);
         driverInfoBarViewModel.setDriver(currentDriver);
     }
 
+    /**
+     * Send data to popupDriverArrivalViewModel
+     */
     private void sendDataToPopupDriverArrivalViewModel() {
         PopupDriverArrivalViewModel popupDriverArrivalViewModel = ViewModelProviders.of(requireActivity()).get(PopupDriverArrivalViewModel.class);
         popupDriverArrivalViewModel.setDriver(currentDriver);
     }
 
-    private void sendDataToRatingViewModel() {
+    /**
+     * Send data to ratingViewModel
+     */
+    private void sendDataToRatingViewModel(){
         RatingViewModel ratingViewModel = ViewModelProviders.of(requireActivity()).get(RatingViewModel.class);
         ratingViewModel.setDriver(currentDriver);
     }
 
+    /**
+     * Set driver for a booking
+     */
     private void setDetectAcceptedDriver() {
         currentBookingListener = currentBookingDocRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -721,7 +782,9 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
-
+    /**
+     * Event listener for driver arrival
+     */
     private void setListenerForDriverArrival() {
         currentBookingListener.remove();
         currentBookingListener = currentBookingDocRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -743,6 +806,9 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
+    /**
+     * Event listener for finishing booking
+     */
     private void setListenerForBookingFinished() {
         currentBookingListener.remove();
         currentBookingListener = currentBookingDocRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -765,6 +831,9 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
+    /**
+     * Event listener for driver marker
+     */
     private void setListenerForDrawingDriverMarker() {
         int resourceType;
         if (transportationType.equals(Constants.Transportation.Type.carType)) {
@@ -816,24 +885,35 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
                 });
     }
 
-
+    /**
+     * Remove listener for driver marker
+     */
     private void removeListenerForDrawingDriverMarker() {
         if (currentDriverListener == null) return;
         currentDriverListener.remove();
         currentDriverListener = null;
     }
 
+    /**
+     * Send data to PopupDriverInfoViewModel
+     */
     private void sendDriverObjectToPopupDriverViewModel() {
         PopupDriverInfoViewModel popupDriverInfoViewModel = ViewModelProviders.of(requireActivity()).get(PopupDriverInfoViewModel.class);
         popupDriverInfoViewModel.setDriver(currentDriver);
     }
 
+    /**
+     * Remove listener for current booking
+     */
     private void removeListenerForCurrentBooking() {
         if (currentBookingListener == null) return;
         currentBookingListener.remove();
         currentBookingListener = null;
     }
 
+    /**
+     * Cancel booking
+     */
     private void cancelBooking() {
         currentBookingDocRef.update(Constants.FSBooking.available, false); //Set available field to false
         if (currentBookingListener != null) currentBookingListener.remove(); //Remove listener

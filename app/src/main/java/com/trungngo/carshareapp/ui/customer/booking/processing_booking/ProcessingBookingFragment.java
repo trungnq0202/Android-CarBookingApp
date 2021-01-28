@@ -51,6 +51,10 @@ public class ProcessingBookingFragment extends Fragment {
         });
     }
 
+    /**
+     * Link view elements from xml file
+     * @param rootView
+     */
     private void linkViewElements(View rootView) {
         originTextView = rootView.findViewById(R.id.originTextView);
         destinationTextView = rootView.findViewById(R.id.destinationTextView);

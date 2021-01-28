@@ -49,12 +49,20 @@ public class PopupDriverArrivalFragment extends DialogFragment {
         return view;
     }
 
+    /**
+     * Link view elements from xml file
+     * @param rootView
+     */
     private void linkViewElements(View rootView){
         driverUsernameTextView = rootView.findViewById(R.id.driverUsernameTextView);
         vehicleInfo = rootView.findViewById(R.id.vehicleInfo);
         closeBtn = rootView.findViewById(R.id.closeBtn);
     }
 
+    /**
+     * Render driver information to view
+     * @param driver
+     */
     @SuppressLint("SetTextI18n")
     private void setDriverInfo(User driver){
         driverUsernameTextView.setText(driver.getUsername());
