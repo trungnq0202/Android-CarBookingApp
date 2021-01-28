@@ -25,6 +25,7 @@ import com.trungngo.carshareapp.ui.customer.booking.dropoff.DropoffViewModel;
 import com.trungngo.carshareapp.ui.customer.booking.pickup.PickupViewModel;
 import com.trungngo.carshareapp.ui.customer.home.CustomerHomeViewModel;
 import com.trungngo.carshareapp.ui.driver.home.DriverHomeViewModel;
+import com.trungngo.carshareapp.ui.user_profile.UserProfileViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -92,7 +93,8 @@ public class MainActivity extends AppCompatActivity {
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_customer_home,
-                R.id.nav_driver_home)
+                R.id.nav_driver_home,
+                R.id.nav_profile)
                 .setDrawerLayout(drawer)
                 .build();
 
@@ -191,12 +193,13 @@ public class MainActivity extends AppCompatActivity {
      * Init all child fragments' view models
      */
     private void initAllChildFragmentsViewModel() {
-        customerHomeViewModel = new ViewModelProvider(this).get(CustomerHomeViewModel.class);
-        driverHomeViewModel = new ViewModelProvider(this).get(DriverHomeViewModel.class);
-        dropoffViewModel = new ViewModelProvider(this).get(DropoffViewModel.class);
-        pickupViewModel = new ViewModelProvider(this).get(PickupViewModel.class);
-        bookingViewModel = new ViewModelProvider(this).get(BookingViewModel.class);
-        checkoutViewModel = new ViewModelProvider(this).get(CheckoutViewModel.class);
+        customerHomeViewModel = ViewModelProviders.of(this).get(CustomerHomeViewModel.class);
+        driverHomeViewModel = ViewModelProviders.of(this).get(DriverHomeViewModel.class);
+        dropoffViewModel = ViewModelProviders.of(this).get(DropoffViewModel.class);
+        pickupViewModel = ViewModelProviders.of(this).get(PickupViewModel.class);
+        bookingViewModel = ViewModelProviders.of(this).get(BookingViewModel.class);
+        checkoutViewModel = ViewModelProviders.of(this).get(CheckoutViewModel.class);
+        userProfileViewModel = ViewModelProviders.of(this).get(UserProfileViewModel.class);
     }
 
     /**
@@ -219,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
         dropoffViewModel.setCurrentUserObject(currentUserObject);
         pickupViewModel.setCurrentUserObject(currentUserObject);
         bookingViewModel.setCurrentUserObject(currentUserObject);
+        userProfileViewModel.setCurrentUserObject(currentUserObject);
     }
 
     @Override

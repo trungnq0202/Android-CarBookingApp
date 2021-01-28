@@ -28,4 +28,11 @@
         android:name="com.trungngo.carshareapp.ui.driver.process_booking.DriverProcessBookingFragment"
         android:label="Booking"
         tools:layout="@layout/fragment_driver_recieve_booking" />
+
+
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.trungngo.carshareapp.ui.user_profile.UserProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_user_profile" />
 </navigation>
