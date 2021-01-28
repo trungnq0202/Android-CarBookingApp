@@ -8,6 +8,9 @@ import android.os.Handler;
 
 import com.trungngo.carshareapp.R;
 
+/**
+ * Loading screen activity
+ */
 public class SplashActivity extends AppCompatActivity {
 
     Handler handler;

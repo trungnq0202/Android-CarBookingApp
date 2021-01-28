@@ -36,7 +36,10 @@ public class DriverAlertFragment extends DialogFragment {
         return new DriverAlertFragment();
     }
 
-
+    /**
+     * Link view elements
+     * @param rootView
+     */
     private void linkViewElements(View rootView) {
         priceText = rootView.findViewById(R.id.priceTextView);
         distanceText = rootView.findViewById(R.id.text_distance);
@@ -85,6 +88,10 @@ public class DriverAlertFragment extends DialogFragment {
         });
     }
 
+    /**
+     * Set booking detail on layout file
+     * @param booking
+     */
     private void setBookingDetails(Booking booking){
         priceText.setText(booking.getPriceInVND());
         distanceText.setText(booking.getDistanceInKm());

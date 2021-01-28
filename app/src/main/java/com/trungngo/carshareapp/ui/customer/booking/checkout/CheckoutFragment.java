@@ -65,6 +65,10 @@ public class CheckoutFragment extends Fragment {
         });
     }
 
+    /**
+     * Link view elements from xml file
+     * @param rootView
+     */
     private void linkViewElements(View rootView){
         carCardView = rootView.findViewById(R.id.carCardView);
         bikeCardView = rootView.findViewById(R.id.bikeCardView);
@@ -75,6 +79,9 @@ public class CheckoutFragment extends Fragment {
         bookBtn = rootView.findViewById(R.id.bookBtn);
     }
 
+    /**
+     * Display card based on vehicle types
+     */
     private void hideAccordingCardView(){
         if (transportationType.equals(Constants.Transportation.Type.carType)) {
             carCardView.setVisibility(View.VISIBLE);
@@ -85,6 +92,9 @@ public class CheckoutFragment extends Fragment {
         }
     }
 
+    /**
+     * Display booking information
+     */
     private void setCheckoutInfo() {
         if (transportationType.equals(Constants.Transportation.Type.carType)) {
             distanceCarTextView.setText(distanceInKmString);

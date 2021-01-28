@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.libraries.places.api.model.Place;
 
+/**
+ * View model for ProcessingBookingFragment
+ */
 public class ProcessingBookingViewModel extends ViewModel {
     private MutableLiveData<String> dropOffPlaceAddress;
     private MutableLiveData<String> pickupPlaceAddress;

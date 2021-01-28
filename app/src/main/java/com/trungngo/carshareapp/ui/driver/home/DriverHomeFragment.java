@@ -377,6 +377,10 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
                 });
     }
 
+    /**
+     * Send data to alertViewModel
+     * @param booking
+     */
     private void sendDataToAlertViewModel(Booking booking){
         DriverAlertViewModel driverAlertViewModel = ViewModelProviders.of(requireActivity()).get(DriverAlertViewModel.class);
         driverAlertViewModel.setBooking(booking);

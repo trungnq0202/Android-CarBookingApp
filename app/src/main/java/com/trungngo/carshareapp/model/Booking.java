@@ -3,6 +3,9 @@ package com.trungngo.carshareapp.model;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.firebase.firestore.DocumentId;
 
+/**
+ * Data model for booking
+ */
 public class Booking {
     @DocumentId
     private String docId;

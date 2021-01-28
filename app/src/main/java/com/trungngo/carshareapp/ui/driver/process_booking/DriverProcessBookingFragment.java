@@ -198,12 +198,17 @@ public class DriverProcessBookingFragment extends Fragment implements OnMapReady
         addressText.setText(currentBooking.getDropOffPlaceAddress());
     }
 
+    /**
+     * Set view in check out state
+     */
     private void setViewInCheckoutState() {
         pickUpBtn.setText(R.string.btn_pickup_state);
     }
 
 
-
+    /**
+     * Update arrival status on DB
+     */
     private void updateArrivalStatusOnDB(){
         currentBookingDocRef.update(Constants.FSBooking.arrived, true)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -214,6 +219,9 @@ public class DriverProcessBookingFragment extends Fragment implements OnMapReady
                 });
     }
 
+    /**
+     * Update finish status on DB
+     */
     private void updateFinishStatusOnDB(){
         currentBookingDocRef.update(Constants.FSBooking.finished, true)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -225,6 +233,9 @@ public class DriverProcessBookingFragment extends Fragment implements OnMapReady
                 });
     }
 
+    /**
+     * load check out fragment
+     */
     private void loadCheckoutFragment(){
         //TODO
         FragmentManager fm = getChildFragmentManager();
@@ -232,12 +243,18 @@ public class DriverProcessBookingFragment extends Fragment implements OnMapReady
         driverCheckoutFragment.show(fm, "fragment_driver_checkout");
     }
 
+    /**
+     * send data to checkout fragment
+     */
     private void sendDataToCheckoutFragment(){
         //TODO
         DriverCheckoutViewModel driverCheckoutViewModel = ViewModelProviders.of(requireActivity()).get(DriverCheckoutViewModel.class);
         driverCheckoutViewModel.setPriceInVNDString(currentBooking.getPriceInVND());
     }
 
+    /**
+     * event listener for pickupbtn
+     */
     private void addEventListenerForPickUpButton() {
         pickUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -393,6 +410,10 @@ public class DriverProcessBookingFragment extends Fragment implements OnMapReady
 //        updateCurrentDriverLocationOnDB(newLatLng);
     }
 
+    /**
+     * Update drive location on firebase
+     * @param newLatLng
+     */
     private void updateCurrentDriverLocationOnDB(LatLng newLatLng){
 //        currentUserObject.setCurrentPositionLatitude(newLatLng.latitude);
 //        currentUserObject.setCurrentPositionLongitude(newLatLng.longitude);
@@ -512,6 +533,10 @@ public class DriverProcessBookingFragment extends Fragment implements OnMapReady
         onGetPositionClick();  // Position the map.
     }
 
+    /**
+     * Draw route on the map
+     * @param result
+     */
     private void drawRoute(List<List<HashMap<String, String>>> result)
     {
         //Clear current route
@@ -572,6 +597,9 @@ public class DriverProcessBookingFragment extends Fragment implements OnMapReady
         }
     }
 
+    /**
+     * Draw route to destination
+     */
     private void drawRouteToDestination() {
         // Checks, whether start and end locations are captured
         // Getting URL to the Google Directions API

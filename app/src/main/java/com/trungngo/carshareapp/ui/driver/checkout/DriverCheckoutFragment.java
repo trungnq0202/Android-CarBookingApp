@@ -29,6 +29,10 @@ public class DriverCheckoutFragment extends DialogFragment {
     private Button exitBtn;
     private Button processBtn;
 
+    /**
+     * Link view elements
+     * @param rootView
+     */
     private void linkViewElements(View rootView) {
         moneyText = rootView.findViewById(R.id.text_money);
         moneyExtraText = rootView.findViewById(R.id.text_moneyExtra);
@@ -55,8 +59,10 @@ public class DriverCheckoutFragment extends DialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        // get view model
         DriverProcessBookingViewModel driverProcessBookingViewModel = ViewModelProviders.of(requireActivity()).get(DriverProcessBookingViewModel.class);
 
+        // action handler for exit btn
         exitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,6 +71,7 @@ public class DriverCheckoutFragment extends DialogFragment {
             }
         });
 
+        //action handler for process btn
         processBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

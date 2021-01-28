@@ -69,6 +69,10 @@ public class PopupDriverInfoFragment extends DialogFragment {
         return view;
     }
 
+    /**
+     * Link view elements from xml file
+     * @param rootView
+     */
     private void linkViewElements(View rootView){
         driverUsernameTextView = rootView.findViewById(R.id.driverUsernameTextView);
         plateNumberAndBike = rootView.findViewById(R.id.plateNumberAndBike);
@@ -76,7 +80,9 @@ public class PopupDriverInfoFragment extends DialogFragment {
         profileImage = rootView.findViewById(R.id.profile_avatar);
     }
 
-
+    /**
+     * Render driver information
+     */
     @SuppressLint("SetTextI18n")
     private void setDriverInfo(){
         driverUsernameTextView.setText(driver.getUsername());

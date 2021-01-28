@@ -6,6 +6,9 @@ import androidx.lifecycle.ViewModel;
 import com.google.android.libraries.places.api.model.Place;
 import com.trungngo.carshareapp.model.User;
 
+/**
+ * View model for BookingFragment
+ */
 public class BookingViewModel extends ViewModel {
     private MutableLiveData<User> currentUserObject;
     private MutableLiveData<Place> customerSelectedDropOffPlace;

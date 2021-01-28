@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.trungngo.carshareapp.model.User;
 
+/**
+ * View model for DriveInforBarFragment
+ */
 public class DriverInfoBarViewModel extends ViewModel {
     private MutableLiveData<User> driver;
 

@@ -2,6 +2,9 @@ package com.trungngo.carshareapp.model;
 
 import com.google.firebase.firestore.DocumentId;
 
+/**
+ * Data model for driver location
+ */
 public class DriverLocation {
 
     @DocumentId
