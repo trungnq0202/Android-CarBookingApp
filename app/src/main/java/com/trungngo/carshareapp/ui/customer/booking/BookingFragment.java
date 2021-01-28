@@ -62,6 +62,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.maps.android.clustering.ClusterManager;
 import com.trungngo.carshareapp.Constants;
 import com.trungngo.carshareapp.R;
@@ -559,6 +560,7 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean == null) return;
+                restartBookingBtn.setVisibility(View.GONE);
                 removeCurrentRoute(); //Remove drawn route
                 createNewBookingInDB(); //Create new booking in DB, set listener to update for driver accepting this booking
                 sendDataToProcessBookingViewModel();
@@ -580,17 +582,29 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onChanged(Integer integer) {
                 if (integer == null) return;
-//                currentDriver.addNewRating(integer);
+                ArrayList<Integer> ratingList = (ArrayList<Integer>) currentDriver.getRating();
+                ratingList.add(integer);
                 db.collection(Constants.FSUser.userCollection)
-                        .document(currentDriver.getDocId())
-                        .update(Constants.FSUser.rating, currentDriver.getRating())
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        .whereEqualTo(Constants.FSUser.emailField, currentDriver.getEmail())
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                             @Override
-                            public void onSuccess(Void aVoid) {
-                                System.out.println("Update Rating success");
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                                    User driver = doc.toObject(User.class);
+                                    db.collection(Constants.FSUser.userCollection)
+                                            .document(driver.getDocId())
+                                            .update(Constants.FSUser.rating, ratingList)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    System.out.println("Update Rating success");
+                                                }
+                                            });
+                                    resetBookingFlow();
+                                }
                             }
                         });
-                resetBookingFlow();
             }
         });
     }
@@ -677,7 +691,7 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         popupDriverArrivalViewModel.setDriver(currentDriver);
     }
 
-    private void sendDataToRatingViewModel(){
+    private void sendDataToRatingViewModel() {
         RatingViewModel ratingViewModel = ViewModelProviders.of(requireActivity()).get(RatingViewModel.class);
         ratingViewModel.setDriver(currentDriver);
     }
@@ -706,6 +720,7 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
             }
         });
     }
+
 
     private void setListenerForDriverArrival() {
         currentBookingListener.remove();
@@ -758,40 +773,44 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
             resourceType = R.drawable.ic_checkout_bike;
 
         }
-
-        currentDriverListener = db.collection(Constants.FSDriverLocation.driverLocationCollection)
-                .document(currentDriver.getDocId())
-                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        db.collection(Constants.FSUser.userCollection)
+                .whereEqualTo(Constants.FSUser.emailField, currentDriver.getEmail())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
-                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if (error != null) {
-                            return;
-                        }
-                        System.out.println("cai loz maaaaaaaaaaaaaaaaa2222222222222222222");
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                            User driver = doc.toObject(User.class);
+                            currentDriverListener = db.collection(Constants.FSDriverLocation.driverLocationCollection)
+                                    .document(driver.getDocId())
+                                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                                            if (error != null) {
+                                                return;
+                                            }
 
-                        if (value != null && value.exists()) {
-                            System.out.println("cai loz maaaaaaaaaaaaaaaaa333333333333333");
+                                            if (value != null && value.exists()) {
 
-                            DriverLocation driverLocation = value.toObject(DriverLocation.class);
-                            if (currentDriverLocationMarker != null) {
-                                currentDriverLocationMarker.remove();
-                                currentDriverLocationMarker = null;
-                            }
+                                                DriverLocation driverLocation = value.toObject(DriverLocation.class);
+                                                if (currentDriverLocationMarker != null) {
+                                                    currentDriverLocationMarker.remove();
+                                                    currentDriverLocationMarker = null;
+                                                }
 
-                            System.out.println("CLCLCLCLCLCLCLCLCLCLCLCLL");
-                            System.out.println(driverLocation.getCurrentPositionLatitude());
-                            System.out.println(driverLocation.getCurrentPositionLongitude());
-
-                            currentDriverLocationMarker = mMap.addMarker(
-                                    new MarkerOptions()
-                                            .position(new LatLng(driverLocation.getCurrentPositionLatitude(),
-                                                    driverLocation.getCurrentPositionLongitude()))
-                                            .icon(bitmapDescriptorFromVector(
-                                                    getActivity(),
-                                                    resourceType, Color.RED)
-                                            )
-                                            .title("Driver is here!")
-                            );
+                                                currentDriverLocationMarker = mMap.addMarker(
+                                                        new MarkerOptions()
+                                                                .position(new LatLng(driverLocation.getCurrentPositionLatitude(),
+                                                                        driverLocation.getCurrentPositionLongitude()))
+                                                                .icon(bitmapDescriptorFromVector(
+                                                                        getActivity(),
+                                                                        resourceType, Color.RED)
+                                                                )
+                                                                .title("Driver is here!")
+                                                );
+                                            }
+                                        }
+                                    });
                         }
                     }
                 });

@@ -361,8 +361,8 @@ public class DriverProcessBookingFragment extends Fragment implements OnMapReady
     private void startLocationUpdate() {
         locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(10 * 1000); //10s
-        locationRequest.setFastestInterval(10 * 1000); //10s
+        locationRequest.setInterval(10 * 1000); //20s
+        locationRequest.setFastestInterval(10 * 1000); //20s
         locationClient.requestLocationUpdates(locationRequest,
                 new LocationCallback() {
                     @Override
@@ -412,7 +412,8 @@ public class DriverProcessBookingFragment extends Fragment implements OnMapReady
 
         db.collection(Constants.FSDriverLocation.driverLocationCollection)
                 .document(currentUserObject.getDocId())
-                .set(driverLocation)
+                .update(Constants.FSDriverLocation.currentPositionLatitude, driverLocation.getCurrentPositionLatitude(),
+                Constants.FSDriverLocation.currentPositionLongitude, driverLocation.getCurrentPositionLongitude())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -580,6 +581,8 @@ public class DriverProcessBookingFragment extends Fragment implements OnMapReady
 
         String url = getRouteUrl(currentUserLocationMarker.getPosition(), currentDestinationLocationMarker.getPosition(), "driving");
 
+        if (url == null) return;
+
         DriverProcessBookingFragment.FetchRouteDataTask fetchRouteDataTask = new DriverProcessBookingFragment.FetchRouteDataTask();
 
         // Start fetching json data from Google Directions API
@@ -632,8 +635,11 @@ public class DriverProcessBookingFragment extends Fragment implements OnMapReady
         String modeParam = Constants.GoogleMaps.DirectionApi.modeParam + "=" + directionMode;
         String params = originParam + "&" + destinationParam + "&" + modeParam;
         String output = Constants.GoogleMaps.DirectionApi.outputParam;
-        return Constants.GoogleMaps.DirectionApi.baseUrl + output + "?" + params
-                + "&key=" + getString(R.string.google_api_key);
+        if (!isDetached()) {
+            return Constants.GoogleMaps.DirectionApi.baseUrl + output + "?" + params
+                    + "&key=" + getString(R.string.google_api_key);
+        }
+        return null;
     }
 
     /**

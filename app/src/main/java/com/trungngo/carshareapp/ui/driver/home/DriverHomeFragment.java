@@ -269,7 +269,8 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
 
         db.collection(Constants.FSDriverLocation.driverLocationCollection)
                 .document(currentUserObject.getDocId())
-                .set(driverLocation)
+                .update(Constants.FSDriverLocation.currentPositionLatitude, driverLocation.getCurrentPositionLatitude(),
+                        Constants.FSDriverLocation.currentPositionLongitude, driverLocation.getCurrentPositionLongitude())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
