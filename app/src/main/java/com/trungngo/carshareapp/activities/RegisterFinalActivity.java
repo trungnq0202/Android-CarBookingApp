@@ -103,6 +103,8 @@ public class RegisterFinalActivity extends AppCompatActivity {
         data.put(Constants.FSUser.roleField, role);
         data.put(Constants.FSUser.transportationType, transportationType);
         data.put(Constants.FSUser.vehiclePlateNumber, vehiclePlateNumber);
+        data.put(Constants.FSUser.currentPositionLatitude, 0.0);
+        data.put(Constants.FSUser.currentPositionLongitude, 0.0);
         data.put(Constants.FSUser.rating, 5.0);
 
 

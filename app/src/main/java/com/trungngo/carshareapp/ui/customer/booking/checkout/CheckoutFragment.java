@@ -14,11 +14,13 @@ import androidx.lifecycle.ViewModelProviders;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.trungngo.carshareapp.Constants;
 import com.trungngo.carshareapp.R;
 import com.trungngo.carshareapp.model.User;
+import com.trungngo.carshareapp.ui.customer.booking.BookingViewModel;
 import com.trungngo.carshareapp.ui.customer.home.CustomerHomeViewModel;
 
 public class CheckoutFragment extends Fragment {
@@ -36,6 +38,7 @@ public class CheckoutFragment extends Fragment {
     private TextView distanceBikeTextView;
     private TextView priceCarTextView;
     private TextView priceBikeTextView;
+    private Button bookBtn;
 
     private User currentUserObject;
 
@@ -48,9 +51,18 @@ public class CheckoutFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_customer_checkout, container, false);
         linkViewElements(view);
-//        hideAccordingCardView();
-//        setCheckoutInfo();
+        setActionHandlers();
         return view;
+    }
+
+    private void setActionHandlers(){
+        bookBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BookingViewModel bookingViewModel = ViewModelProviders.of(requireActivity()).get(BookingViewModel.class);
+                bookingViewModel.setBookBtnPressed(true);
+            }
+        });
     }
 
     private void linkViewElements(View rootView){
@@ -60,6 +72,7 @@ public class CheckoutFragment extends Fragment {
         distanceBikeTextView = rootView.findViewById(R.id.distanceBikeTextView);
         priceCarTextView = rootView.findViewById(R.id.priceCarTextView);
         priceBikeTextView = rootView.findViewById(R.id.priceBikeTextView);
+        bookBtn = rootView.findViewById(R.id.bookBtn);
     }
 
     private void hideAccordingCardView(){

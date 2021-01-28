@@ -1,10 +1,7 @@
 package com.trungngo.carshareapp.ui.driver.alert;
 
-import android.app.Dialog;
-import android.app.Fragment;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,18 +12,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.Navigation;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.trungngo.carshareapp.R;
-import com.trungngo.carshareapp.ui.driver.booking.DriverBookingFragment;
+import com.trungngo.carshareapp.model.Booking;
+import com.trungngo.carshareapp.ui.driver.home.DriverHomeViewModel;
+
+import java.util.Objects;
 
 public class DriverAlertFragment extends DialogFragment {
     public static String TAG = "DriverAlertDialog";
 
     private TextView priceText;
-    private TextView paymentTypeText;
-    private TextView serviceText;
     private TextView distanceText;
     private TextView pickUpLocationText;
     private TextView dropOffLocationText;
@@ -40,12 +38,10 @@ public class DriverAlertFragment extends DialogFragment {
 
 
     private void linkViewElements(View rootView) {
-        priceText = rootView.findViewById(R.id.text_price);
-        paymentTypeText = rootView.findViewById(R.id.text_payment_method);
-        serviceText = rootView.findViewById(R.id.text_service);
+        priceText = rootView.findViewById(R.id.priceTextView);
         distanceText = rootView.findViewById(R.id.text_distance);
         pickUpLocationText = rootView.findViewById(R.id.text_pickUpLocation);
-        pickUpLocationText = rootView.findViewById(R.id.text_dropLocation);
+        dropOffLocationText = rootView.findViewById(R.id.text_dropLocation);
         declineBtn = rootView.findViewById(R.id.btn_decline);
         acceptBtn = rootView.findViewById(R.id.btn_accept);
     }
@@ -62,17 +58,20 @@ public class DriverAlertFragment extends DialogFragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_driver_alert, container, false);
         linkViewElements(root);
-        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Objects.requireNonNull(getDialog()).getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         return root;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        DriverHomeViewModel driverHomeViewModel = ViewModelProviders.of(requireActivity()).get(DriverHomeViewModel.class);
+
 
         declineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                driverHomeViewModel.setAcceptBookingBtnPressed(false);
                 dismiss();
             }
         });
@@ -80,12 +79,30 @@ public class DriverAlertFragment extends DialogFragment {
         acceptBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                DriverBookingFragment driverBookingFragment = new DriverBookingFragment();
-//                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-//                transaction.replace(R.id.nav_host_fragment, driverBookingFragment).commit();
-                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.nav_driver_booking);
-
+                driverHomeViewModel.setAcceptBookingBtnPressed(true);
+                dismiss();
             }
         });
     }
+
+    private void setBookingDetails(Booking booking){
+        priceText.setText(booking.getPriceInVND());
+        distanceText.setText(booking.getDistanceInKm());
+        pickUpLocationText.setText(booking.getPickupPlaceAddress());
+        dropOffLocationText.setText(booking.getDropOffPlaceAddress());
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        DriverAlertViewModel driverAlertViewModel = ViewModelProviders.of(requireActivity()).get(DriverAlertViewModel.class);
+        driverAlertViewModel.getBooking().observe(getViewLifecycleOwner(), new Observer<Booking>() {
+            @Override
+            public void onChanged(Booking booking) {
+                setBookingDetails(booking);
+            }
+        });
+
+    }
+
 }

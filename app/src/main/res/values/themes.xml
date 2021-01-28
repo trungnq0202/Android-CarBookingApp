@@ -29,4 +29,9 @@
 
     <style name="Theme.CarShareApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="RatingBar" parent="Theme.AppCompat">
+        <item name="colorControlNormal">@color/quantum_grey400</item>
+        <item name="colorControlActivated">@color/dusk_yellow</item>
+    </style>
+
 </resources>

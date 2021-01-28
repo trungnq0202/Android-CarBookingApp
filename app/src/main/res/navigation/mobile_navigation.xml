@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/nav_driver_booking"
-        android:name="com.trungngo.carshareapp.ui.driver.booking.DriverBookingFragment"
+        android:name="com.trungngo.carshareapp.ui.driver.process_booking.DriverProcessBookingFragment"
         android:label="Booking"
         tools:layout="@layout/fragment_driver_recieve_booking" />
 </navigation>

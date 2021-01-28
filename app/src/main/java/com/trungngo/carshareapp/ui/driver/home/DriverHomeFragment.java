@@ -50,22 +50,36 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.trungngo.carshareapp.Constants;
 import com.trungngo.carshareapp.R;
 import com.trungngo.carshareapp.activities.MainActivity;
+import com.trungngo.carshareapp.model.Booking;
 import com.trungngo.carshareapp.model.User;
 import com.trungngo.carshareapp.ui.customer.booking.dropoff.DropoffFragment;
 import com.trungngo.carshareapp.ui.customer.home.CustomerHomeViewModel;
 import com.trungngo.carshareapp.ui.driver.alert.DriverAlertFragment;
+import com.trungngo.carshareapp.ui.driver.alert.DriverAlertViewModel;
 import com.trungngo.carshareapp.ui.driver.driver_info.DriverInfoFragment;
 import com.trungngo.carshareapp.ui.driver.driver_info.DriverInfoViewModel;
+
+import java.util.ArrayList;
 
 public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
 
@@ -82,6 +96,7 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
     private Marker currentOriginLocationMarker;
     private Marker currentDestinationLocationMarker;
     private Location currentUserLocation;
+    private ArrayList<Polyline> currentRoute = new ArrayList<>();
 
 
     private FloatingActionButton getMyLocationBtn;
@@ -93,6 +108,12 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
 
     private User currentUserObject;
 
+    //Booking flow
+    Boolean isBusy;
+//    Boolean isUpdateLocationOnDatabase;
+    DocumentReference currentBookingDocRef;
+    ListenerRegistration currentBookingListener;
+
 
     /**
      * Connect view elements for further use
@@ -103,15 +124,6 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
-    /**
-     * Show the driver alert dialog
-     */
-    private void showNotifyBookingDialog() {
-        FragmentManager fm = getChildFragmentManager();
-        DriverAlertFragment driverAlertFragment = DriverAlertFragment.newInstance();
-        driverAlertFragment.show(fm, "fragment_notify_booking");
-
-    }
 
     /**
      * Request user for location permission
@@ -149,11 +161,11 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
+
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        driverHomeViewModel =
-                new ViewModelProvider(this).get(DriverHomeViewModel.class);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_driver_home, container, false);
         linkViewElements(root);
         mAuth = FirebaseAuth.getInstance();
@@ -179,11 +191,10 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadDriverInfoFragment();
-
+        resetBookingFlow();
+//        loadDriverInfoFragment();
+        setListenerForBooking();
     }
-
-
 
     /**
      * Init Google MapsFragment
@@ -194,23 +205,6 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
         supportMapFragment.getMapAsync(this);
     }
 
-
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        driverHomeViewModel = ViewModelProviders.of(requireActivity()).get(DriverHomeViewModel.class);
-        driverHomeViewModel.getCurrentUserObject().observe(getViewLifecycleOwner(), new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                currentUserObject = user;
-                sendDriverInfoDataToViewModel();
-            }
-        });
-
-    }
-
-
     /**
      * //Start location update listener
      */
@@ -218,8 +212,8 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
     private void startLocationUpdate() {
         locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(5 * 1000); //5s
-        locationRequest.setFastestInterval(5 * 1000); //5s
+        locationRequest.setInterval(10 * 1000); //5s
+        locationRequest.setFastestInterval(10 * 1000); //5s
         locationClient.requestLocationUpdates(locationRequest,
                 new LocationCallback() {
                     @Override
@@ -230,6 +224,7 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
                                 location.getLongitude());
                         updateCurrentUserLocationMarker(latLng);
 //                        updateCurrentRoute();
+                        updateCurrentDriverLocationOnDB(latLng);
 
                     }
                 }
@@ -261,6 +256,21 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
                 });
     }
 
+    private void updateCurrentDriverLocationOnDB(LatLng newLatLng){
+        currentUserObject.setCurrentPositionLatitude(newLatLng.latitude);
+        currentUserObject.setCurrentPositionLongitude(newLatLng.longitude);
+        db.collection(Constants.FSUser.userCollection)
+                .document(currentUserObject.getDocId())
+                .set(currentUserObject)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+//                        drawNewCurrentUserLocationMarker(newLatLng);
+                    }
+                });
+
+    }
+
     /**
      * Update current user location marker
      * @param newLatLng
@@ -269,7 +279,12 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
         if (currentUserLocationMarker != null) {
             currentUserLocationMarker.remove();
         }
+        drawNewCurrentUserLocationMarker(newLatLng);
 
+//        updateCurrentDriverLocationOnDB(newLatLng);
+    }
+
+    private void drawNewCurrentUserLocationMarker(LatLng newLatLng) {
         currentUserLocationMarker = mMap.addMarker(
                 new MarkerOptions()
                         .position(newLatLng)
@@ -316,6 +331,125 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel));
     }
 
+    /*************************************************** For booking synchronization *****************************************************/
+    private void resetBookingFlow(){
+        isBusy = false;
+        if (currentBookingDocRef != null) currentBookingDocRef = null;
+        if (currentBookingListener != null) {
+            currentBookingListener.remove();
+            currentBookingListener = null;
+        }
+
+        loadDriverInfoFragment();
+    }
+
+    private void setListenerForBooking() {
+        db.collection(Constants.FSBooking.bookingCollection)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+                            return;
+                        }
+
+                        //Check if the driver is currently busy
+                        if (isBusy) return;
+
+                        for (QueryDocumentSnapshot doc : value) {
+                            Booking booking = doc.toObject(Booking.class);
+                            if (booking.getAvailable()) {
+                                currentBookingDocRef = doc.getReference();
+                                sendDataToAlertViewModel(booking);
+                                loadDriverAlertFragment();
+                                break;
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void sendDataToAlertViewModel(Booking booking){
+        DriverAlertViewModel driverAlertViewModel = ViewModelProviders.of(requireActivity()).get(DriverAlertViewModel.class);
+        driverAlertViewModel.setBooking(booking);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        driverHomeViewModel.setAcceptBookingBtnPressed(null);
+    }
+
+    /**
+     * Show the driver alert dialog
+     */
+    private void loadDriverAlertFragment(){
+        FragmentManager fm = getChildFragmentManager();
+        DriverAlertFragment driverAlertFragment = DriverAlertFragment.newInstance();
+        driverAlertFragment.show(fm, "fragment_notify_booking");
+    }
+
+    private void checkBookingStillAvailable(){
+        currentBookingDocRef.get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        Booking booking = task.getResult().toObject(Booking.class);
+                        if (booking.getAvailable()){
+                            setDriverOfCurrentBooking();
+                        } else {
+                            resetBookingFlow();
+                        }
+                    }
+                });
+    }
+
+    private void handleAcceptBooking() {
+        isBusy = true;
+        checkBookingStillAvailable();
+    }
+
+    private void setDriverOfCurrentBooking() {
+        currentBookingDocRef.update(
+                Constants.FSBooking.driver,
+                currentUserObject
+        );
+
+        //TODO move to DriverBookingFragment
+
+    }
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        driverHomeViewModel = ViewModelProviders.of(requireActivity()).get(DriverHomeViewModel.class);
+        driverHomeViewModel.getCurrentUserObject().observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                currentUserObject = user;
+                sendDriverInfoDataToViewModel();
+            }
+        });
+
+        //****************************** For booking synchronization ******************************//
+        driverHomeViewModel.getAcceptBookingBtnPressed().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean == null) return;
+                if (aBoolean) {
+                    handleAcceptBooking();
+                } else {
+                    resetBookingFlow();
+                }
+                driverHomeViewModel.setAcceptBookingBtnPressed(null);
+            }
+        });
+
+
+    }
+
+    /*************************************************** For booking synchronization *****************************************************/
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -326,7 +460,7 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
         this.placesClient = Places.createClient(requireActivity().getApplicationContext());
         mMap = googleMap;
         requestPermission(); //Request user for location permission
-        locationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        locationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
         mMap.getUiSettings().setZoomControlsEnabled(true);
         startLocationUpdate(); //Start location update listener
 //        setUpCluster(); //Set up cluster on Google Map

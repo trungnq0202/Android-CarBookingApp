@@ -11,6 +11,8 @@ public class BookingViewModel extends ViewModel {
     private MutableLiveData<Place> customerSelectedDropOffPlace;
     private MutableLiveData<Place> customerSelectedPickupPlace;
     private MutableLiveData<String> transportationType;
+    private MutableLiveData<Boolean> bookBtnPressed;
+    private MutableLiveData<Boolean> cancelBookingBtnPressed;
 
 
     public BookingViewModel() {
@@ -18,7 +20,8 @@ public class BookingViewModel extends ViewModel {
         customerSelectedDropOffPlace = new MutableLiveData<>();
         customerSelectedPickupPlace = new MutableLiveData<>();
         transportationType = new MutableLiveData<>();
-
+        bookBtnPressed = new MutableLiveData<>();
+        cancelBookingBtnPressed = new MutableLiveData<>();
     }
 
     public MutableLiveData<String> getTransportationType() {
@@ -41,6 +44,14 @@ public class BookingViewModel extends ViewModel {
         this.customerSelectedPickupPlace.setValue(customerSelectedPickupPlace);
     }
 
+    public void setBookBtnPressed(Boolean bookBtnPressed) {
+        this.bookBtnPressed.setValue(bookBtnPressed);
+    }
+
+    public void setCancelBookingBtnPressed(Boolean cancelBookingBtnPressed) {
+        this.cancelBookingBtnPressed.setValue(cancelBookingBtnPressed);
+    }
+
     public MutableLiveData<Place> getCustomerSelectedPickupPlace() {
         return customerSelectedPickupPlace;
     }
@@ -51,5 +62,13 @@ public class BookingViewModel extends ViewModel {
 
     public MutableLiveData<Place> getCustomerSelectedDropOffPlace() {
         return customerSelectedDropOffPlace;
+    }
+
+    public MutableLiveData<Boolean> getBookBtnPressed() {
+        return bookBtnPressed;
+    }
+
+    public MutableLiveData<Boolean> getCancelBookingBtnPressed() {
+        return cancelBookingBtnPressed;
     }
 }

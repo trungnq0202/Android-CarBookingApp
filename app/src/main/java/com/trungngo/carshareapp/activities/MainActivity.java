@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -141,10 +142,11 @@ public class MainActivity extends AppCompatActivity {
     private void getCurrentUserObject() {
         db.collection(Constants.FSUser.userCollection)
                 .whereEqualTo(Constants.FSUser.emailField, currentUser.getEmail())
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                        for (QueryDocumentSnapshot doc : value) {
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                             currentUserObject = doc.toObject(User.class);
                             setNavHeaderEmailAndUsername(); //Set nav header username and email
                             setAllChildFragmentsViewModelData();
@@ -152,6 +154,17 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+//                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+//                        for (QueryDocumentSnapshot doc : value) {
+//                            currentUserObject = doc.toObject(User.class);
+//                            setNavHeaderEmailAndUsername(); //Set nav header username and email
+//                            setAllChildFragmentsViewModelData();
+//                            navigationDrawerSetup();
+//                        }
+//                    }
+//                });
     }
 
     /**

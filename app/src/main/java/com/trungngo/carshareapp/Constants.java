@@ -13,7 +13,6 @@ public class Constants {
         }
     }
 
-
     //Fields of FireStore 'users' collection
     public static class FSUser {
         public static final String userCollection = "users";
@@ -26,30 +25,34 @@ public class Constants {
         public static final String transportationType = "transportationType";
         public static final String vehiclePlateNumber = "vehiclePlateNumber";
         public static final String rating = "rating";
+        public static final String currentPositionLatitude = "currentPositionLatitude";
+        public static final String currentPositionLongitude = "currentPositionLongitude";
+
 
         public static final String roleCustomerVal = "Customer";
         public static final String roleDriverVal = "Driver";
     }
 
-    public static class FSSite {
-        public static final String siteCollection = "sites";
-        public static final String siteNameField = "siteName";
-        public static final String adminIdField = "adminId";
-        public static final String participantsIdField = "participantsId";
-        public static final String startDateField = "startDate";
-        public static final String endDateField = "endDate";
+    public static class FSBooking {
+        public static final String bookingCollection = "bookings";
+        public static final String pickupPlaceAddress = "pickupPlaceAddress";
+        public static final String dropOffPlaceAddress = "dropOffPlaceAddress";
+        public static final String pickUpPlaceLatitude = "pickUpPlaceLatitude";
+        public static final String pickUpPlaceLongitude = "pickUpPlaceLongitude";
+        public static final String dropOffPlaceLatitude = "dropOffPlaceLatitude";
+        public static final String dropOffPlaceLongitude = "dropOffPlaceLongitude";
 
-        public static final String placeIdField = "placeId";
-        public static final String placeName = "placeName";
-        public static final String placeLatitude = "placeLatitude";
-        public static final String placeLongitude = "placeLongitude";
-        public static final String placeAddress = "placeAddress";
+        public static final String driver = "driver";
+        public static final String distanceInKm = "distanceInKm";
+        public static final String priceInVND = "priceInVND";
+        public static final String transportationType = "transportationType";
+        public static final String available = "available";
+        public static final String arrived = "arrived";
+        public static final String finished = "finished";
+
     }
 
-    public static class FSUsedLocations {
-        public static final String usedLocationsCollection = "usedLocations";
-        public static final String locationIdField = "locationId";
-    }
+
 
     //All Toast messages being used
     public static class ToastMessage {
@@ -62,14 +65,9 @@ public class Constants {
         public static final String emptyMessageInputError = "Please type your message to send!";
 
         //Create site validation message
-        public static final String notEnoughDetailsOfSite = "Please choose a more specific site. Street, City and district must be filled in!";
-        public static final String wrongEventDateOrder = "Event start date must be before end date!";
-        public static final String createSiteSuccess = "Create new site successfully!";
-        public static final String emptyEventDateError = "Please choose your start/end event date!";
+
         public static final String placeAutocompleteError = "Google PlaceAutocomplete error with code: ";
-        public static final String emptySiteNameError = "Please give your event site a name!";
-        public static final String successfullyCreateSite = "Create new site successfully!";
-        public static final String existedEventThatUsedThisLocation = "This location has been used to make an event, please choose another location!";
+
 
         //Maps Error Handling
         public static final String currentLocationNotUpdatedYet = "Please wait for a few seconds for current location to be updated!";
@@ -77,6 +75,10 @@ public class Constants {
 
         //Edit site Message
         public static final String editSiteSuccess = "Edit site successfully!";
+
+        //Booking error
+        public static final String addNewBookingToDbFail = "Fail to create new booking";
+
     }
 
     public static class PlaceAddressComponentTypes {

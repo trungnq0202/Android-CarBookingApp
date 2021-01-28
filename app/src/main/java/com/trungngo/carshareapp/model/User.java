@@ -18,12 +18,14 @@ public class User {
     private String transportationType;
     private String vehiclePlateNumber;
     private Double rating;
+    private Double currentPositionLatitude;
+    private Double currentPositionLongitude;
 
 
     public User() {
     }
 
-    public User(String docId, String username, String phone, Date birthDate, String gender, String email, String role, String transportationType, String vehiclePlateNumber, Double rating) {
+    public User(String docId, String username, String phone, Date birthDate, String gender, String email, String role, String transportationType, String vehiclePlateNumber, Double rating, Double currentPositionLatitude, Double currentPositionLongitude) {
         this.docId = docId;
         this.username = username;
         this.phone = phone;
@@ -34,6 +36,24 @@ public class User {
         this.transportationType = transportationType;
         this.vehiclePlateNumber = vehiclePlateNumber;
         this.rating = rating;
+        this.currentPositionLatitude = currentPositionLatitude;
+        this.currentPositionLongitude = currentPositionLongitude;
+    }
+
+    public Double getCurrentPositionLatitude() {
+        return currentPositionLatitude;
+    }
+
+    public void setCurrentPositionLatitude(Double currentPositionLatitude) {
+        this.currentPositionLatitude = currentPositionLatitude;
+    }
+
+    public Double getCurrentPositionLongitude() {
+        return currentPositionLongitude;
+    }
+
+    public void setCurrentPositionLongitude(Double currentPositionLongitude) {
+        this.currentPositionLongitude = currentPositionLongitude;
     }
 
     public boolean isCustomer(){

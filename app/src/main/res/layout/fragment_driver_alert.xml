@@ -7,7 +7,7 @@
     android:background="@drawable/dialog_rounded_title">
 
     <TextView
-        android:id="@+id/text_price"
+        android:id="@+id/priceTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="25dp"
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="10dp"
-            android:text="Grab Car"
+            android:text="Details"
             android:textColor="@color/white"
             android:textSize="36sp"
             android:textStyle="bold" />
