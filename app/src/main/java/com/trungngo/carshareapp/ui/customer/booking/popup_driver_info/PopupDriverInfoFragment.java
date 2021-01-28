@@ -5,6 +5,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,9 +17,21 @@ import androidx.lifecycle.ViewModelProviders;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
+import com.trungngo.carshareapp.Constants;
 import com.trungngo.carshareapp.R;
 import com.trungngo.carshareapp.model.User;
 
@@ -28,6 +42,13 @@ public class PopupDriverInfoFragment extends DialogFragment {
     private TextView driverUsernameTextView;
     private TextView plateNumberAndBike;
     private RatingBar ratingBar;
+    private ImageView profileImage;
+
+    //Firestore instances
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    private FirebaseUser currentUser;
+    private StorageReference mStorageRef;
 
     private User driver;
 
@@ -40,7 +61,10 @@ public class PopupDriverInfoFragment extends DialogFragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_popup_driver_info, container, false);
         linkViewElements(view);
-
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
         return view;
     }
@@ -49,6 +73,7 @@ public class PopupDriverInfoFragment extends DialogFragment {
         driverUsernameTextView = rootView.findViewById(R.id.driverUsernameTextView);
         plateNumberAndBike = rootView.findViewById(R.id.plateNumberAndBike);
         ratingBar = rootView.findViewById(R.id.ratingBar);
+        profileImage = rootView.findViewById(R.id.profile_avatar);
     }
 
 
@@ -57,6 +82,36 @@ public class PopupDriverInfoFragment extends DialogFragment {
         driverUsernameTextView.setText(driver.getUsername());
         plateNumberAndBike.setText(driver.getVehiclePlateNumber() + " ● " + driver.getTransportationType());
         ratingBar.setRating(getRatingAverage(driver));
+        setProfileImage();
+    }
+
+    private void setProfileImage(){
+        db.collection(Constants.FSUser.userCollection)
+                .whereEqualTo(Constants.FSUser.emailField, driver.getEmail())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                            User driver = doc.toObject(User.class);
+
+//                            assert driver != null;
+                            StorageReference fref = mStorageRef.child("profileImages").child(driver.getDocId() + ".jpeg");
+
+                            fref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Picasso.get().load(uri).into(profileImage);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+
+                                }
+                            });
+                        }
+                    }
+                });
     }
 
     public float getRatingAverage(User driver) {

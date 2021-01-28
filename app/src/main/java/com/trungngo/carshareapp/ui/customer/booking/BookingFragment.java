@@ -82,6 +82,7 @@ import com.trungngo.carshareapp.ui.customer.booking.popup_driver_info.PopupDrive
 import com.trungngo.carshareapp.ui.customer.booking.processing_booking.ProcessingBookingFragment;
 import com.trungngo.carshareapp.ui.customer.booking.processing_booking.ProcessingBookingViewModel;
 import com.trungngo.carshareapp.ui.customer.booking.rating.RatingFragment;
+import com.trungngo.carshareapp.ui.customer.booking.rating.RatingViewModel;
 import com.trungngo.carshareapp.utilities.DirectionsJSONParser;
 
 import org.json.JSONObject;
@@ -676,6 +677,11 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         popupDriverArrivalViewModel.setDriver(currentDriver);
     }
 
+    private void sendDataToRatingViewModel(){
+        RatingViewModel ratingViewModel = ViewModelProviders.of(requireActivity()).get(RatingViewModel.class);
+        ratingViewModel.setDriver(currentDriver);
+    }
+
     private void setDetectAcceptedDriver() {
         currentBookingListener = currentBookingDocRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -736,6 +742,7 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
                     if (booking.getFinished()) {
                         //TODO aaaaaaahhhhhhhhhhhhhhhhhhhhhhhhhh
                         System.out.println("Finisheddddddddd this trip");
+                        sendDataToRatingViewModel();
                         loadCustomerRatingFragment();
                     }
                 }

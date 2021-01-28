@@ -71,8 +71,8 @@
 
             <ImageView
                 android:id="@+id/profile_avatar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:background="@color/quantum_grey300"

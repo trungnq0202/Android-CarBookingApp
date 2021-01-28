@@ -220,7 +220,7 @@ public class UserProfileFragment extends Fragment {
      * Get profile image from firebase
      */
     private void setImageFromFirebase() {
-        StorageReference fref = mStorageRef.child("profileImages").child(currentUser.getUid()+".jpeg");
+        StorageReference fref = mStorageRef.child("profileImages").child(currentUserObject.getDocId()+".jpeg");
 
         fref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -239,7 +239,7 @@ public class UserProfileFragment extends Fragment {
      * @param uri
      */
     private void uploadImageFirebase(Uri uri) {
-        StorageReference fref = mStorageRef.child("profileImages").child(currentUser.getUid()+".jpeg");
+        StorageReference fref = mStorageRef.child("profileImages").child(currentUserObject.getDocId()+".jpeg");
         fref.putFile(uri).addOnSuccessListener(
                 new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -362,7 +362,7 @@ public class UserProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setImageFromFirebase();
+//        setImageFromFirebase();
         handleProfileImageClick();
         setChangePasswordBtnHandler();
         setUpdateBtnHandler();
@@ -377,6 +377,7 @@ public class UserProfileFragment extends Fragment {
             public void onChanged(User user) {
                 currentUserObject = user;
                 renderUserDetails();
+                setImageFromFirebase();
             }
         });
     }

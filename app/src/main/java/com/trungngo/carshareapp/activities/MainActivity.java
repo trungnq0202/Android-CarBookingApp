@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     PickupViewModel pickupViewModel;
     BookingViewModel bookingViewModel;
     CheckoutViewModel checkoutViewModel;
+    UserProfileViewModel userProfileViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
