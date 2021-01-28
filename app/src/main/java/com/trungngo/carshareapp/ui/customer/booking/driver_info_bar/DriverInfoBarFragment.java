@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.trungngo.carshareapp.R;
@@ -25,7 +26,7 @@ public class DriverInfoBarFragment extends Fragment {
     private TextView driverUsernameTextView;
     private TextView plateNumberTextView;
     private TextView transportationTypeTextView;
-
+    private RatingBar ratingBar;
 
     public static DriverInfoBarFragment newInstance() {
         return new DriverInfoBarFragment();
@@ -45,7 +46,7 @@ public class DriverInfoBarFragment extends Fragment {
         driverUsernameTextView = rootView.findViewById(R.id.driverUsernameTextView);
         plateNumberTextView = rootView.findViewById(R.id.plateNumberTextView);
         transportationTypeTextView = rootView.findViewById(R.id.transportationTypeTextView);
-
+        ratingBar = rootView.findViewById(R.id.score_rating_bar);
 
     }
 
@@ -53,8 +54,16 @@ public class DriverInfoBarFragment extends Fragment {
         driverUsernameTextView.setText(driver.getUsername());
         plateNumberTextView.setText(driver.getVehiclePlateNumber());
         transportationTypeTextView.setText(driver.getTransportationType());
+        ratingBar.setRating(getRatingAverage(driver));
     }
 
+    public float getRatingAverage(User driver) {
+        double total = 0;
+        for (int _rating : driver.getRating()) {
+            total += _rating;
+        }
+        return (float) (total / driver.getRating().size());
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

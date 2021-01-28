@@ -60,7 +60,15 @@ public class DriverInfoFragment extends Fragment {
         driverName.setText("Username: " + currentUserObject.getUsername());
         vehicleTypeTextView.setText("Vehicle type: " + currentUserObject.getTransportationType());
         vehiclePlateNumberTextView.setText("Plate number: " + currentUserObject.getVehiclePlateNumber());
-        driverRating.setText(Double.toString(currentUserObject.getRating()));
+        driverRating.setText(Double.toString(getRatingAverage(currentUserObject)));
+    }
+
+    public float getRatingAverage(User driver) {
+        double total = 0;
+        for (int _rating : driver.getRating()) {
+            total += _rating;
+        }
+        return (float) (total / driver.getRating().size());
     }
 
     @Override

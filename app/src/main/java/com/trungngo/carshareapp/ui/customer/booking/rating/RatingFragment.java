@@ -1,5 +1,6 @@
 package com.trungngo.carshareapp.ui.customer.booking.rating;
 
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.trungngo.carshareapp.R;
+import com.trungngo.carshareapp.ui.customer.booking.BookingViewModel;
 
-public class RatingFragment extends Fragment {
+public class RatingFragment extends DialogFragment {
 
     private RatingViewModel mViewModel;
     private RatingBar mRatingBar;
@@ -43,6 +46,8 @@ public class RatingFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_customer_rating, container, false);
         linkViewElements(view);
+        mFeedback.setText("");
+        mRatingBar.setRating(0);
 
         mRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
@@ -73,14 +78,10 @@ public class RatingFragment extends Fragment {
         mSendFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mFeedback.getText().toString().isEmpty()) {
-                    Toast.makeText(getActivity(), "Please fill in feedback text box", Toast.LENGTH_LONG).show();
-                }
-                else {
-                    mFeedback.setText("");
-                    mRatingBar.setRating(0);
-                    Toast.makeText(getActivity(), "Thank you for sharing your feedback", Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(getActivity(), "Thank you for sharing your feedback", Toast.LENGTH_SHORT).show();
+                BookingViewModel bookingViewModel = ViewModelProviders.of(requireActivity()).get(BookingViewModel.class);
+                bookingViewModel.setFeedBackRating((int) mRatingBar.getRating());
+                dismiss();
             }
         });
         return view;

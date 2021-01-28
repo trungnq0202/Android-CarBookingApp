@@ -10,6 +10,7 @@ public class ProcessingBookingViewModel extends ViewModel {
     private MutableLiveData<String> pickupPlaceAddress;
     private MutableLiveData<String> priceInVNDString;
 
+
     public ProcessingBookingViewModel() {
         dropOffPlaceAddress = new MutableLiveData<>();
         pickupPlaceAddress = new MutableLiveData<>();

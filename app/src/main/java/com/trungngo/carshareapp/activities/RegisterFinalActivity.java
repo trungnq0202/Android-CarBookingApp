@@ -105,8 +105,10 @@ public class RegisterFinalActivity extends AppCompatActivity {
         data.put(Constants.FSUser.vehiclePlateNumber, vehiclePlateNumber);
         data.put(Constants.FSUser.currentPositionLatitude, 0.0);
         data.put(Constants.FSUser.currentPositionLongitude, 0.0);
-        data.put(Constants.FSUser.rating, 5.0);
-
+//        data.put(Constants.FSUser.rating, 5.0);
+        ArrayList<Integer> rating = new ArrayList<>();
+        rating.add(5);
+        data.put(Constants.FSUser.rating, rating);
 
         db.collection(Constants.FSUser.userCollection).add(data);
     }

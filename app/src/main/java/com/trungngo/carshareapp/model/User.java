@@ -17,7 +17,7 @@ public class User {
     private String role;
     private String transportationType;
     private String vehiclePlateNumber;
-    private Double rating;
+    private List<Integer> rating;
     private Double currentPositionLatitude;
     private Double currentPositionLongitude;
 
@@ -25,7 +25,7 @@ public class User {
     public User() {
     }
 
-    public User(String docId, String username, String phone, Date birthDate, String gender, String email, String role, String transportationType, String vehiclePlateNumber, Double rating, Double currentPositionLatitude, Double currentPositionLongitude) {
+    public User(String docId, String username, String phone, Date birthDate, String gender, String email, String role, String transportationType, String vehiclePlateNumber, List<Integer> rating, Double currentPositionLatitude, Double currentPositionLongitude) {
         this.docId = docId;
         this.username = username;
         this.phone = phone;
@@ -56,9 +56,9 @@ public class User {
         this.currentPositionLongitude = currentPositionLongitude;
     }
 
-    public boolean isCustomer(){
-        return this.role.equals("Customer");
-    }
+//    public boolean isCustomer(){
+//        return this.role.equals("Customer");
+//    }
 
     public String getDocId() {
         return docId;
@@ -124,6 +124,10 @@ public class User {
         this.transportationType = transportationType;
     }
 
+    public void setRating(List<Integer> rating) {
+        this.rating = rating;
+    }
+
     public String getVehiclePlateNumber() {
         return vehiclePlateNumber;
     }
@@ -132,11 +136,19 @@ public class User {
         this.vehiclePlateNumber = vehiclePlateNumber;
     }
 
-    public Double getRating() {
+    public List<Integer> getRating() {
         return rating;
     }
 
-    public void setRating(Double rating) {
-        this.rating = rating;
-    }
+//    public float getRatingAverage(){
+//        double total = 0;
+//        for (int _rating : this.rating){
+//            total += _rating;
+//        }
+//        return (float) (total / this.rating.size());
+//    }
+//
+//    public void addNewRating(int newRating) {
+//        this.rating.add(newRating);
+//    }
 }

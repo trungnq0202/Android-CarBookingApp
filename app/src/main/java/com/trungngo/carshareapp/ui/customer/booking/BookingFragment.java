@@ -66,6 +66,7 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.trungngo.carshareapp.Constants;
 import com.trungngo.carshareapp.R;
 import com.trungngo.carshareapp.model.Booking;
+import com.trungngo.carshareapp.model.DriverLocation;
 import com.trungngo.carshareapp.model.GoogleMaps.MyClusterItem;
 import com.trungngo.carshareapp.model.User;
 import com.trungngo.carshareapp.ui.customer.booking.checkout.CheckoutFragment;
@@ -213,7 +214,7 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         removeAllMarkers();
         //Remove current route
         removeCurrentRoute();
-//        //Go back to the picking drop-off place step
+        //Go back to the picking drop-off place step
         loadDropOffPlacePickerFragment();
         //Hide back btn
         restartBookingBtn.setVisibility(View.GONE);
@@ -240,8 +241,6 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void loadDropOffPlacePickerFragment() {
-
-
         //Load drop-off picker fragment
         DropoffFragment dropoffFragment = new DropoffFragment();
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -486,6 +485,7 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         mViewModel.setTransportationType(null);
         mViewModel.setBookBtnPressed(null);
         mViewModel.setCancelBookingBtnPressed(null);
+        mViewModel.setFeedBackRating(null);
     }
 
 
@@ -571,12 +571,27 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean == null) return;
                 resetBookingFlow();
-                //TODO set current booking object in DB with field available as 'False'
                 cancelBooking();
             }
         });
 
-        //TODO Rating done
+        mViewModel.getFeedBackRating().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if (integer == null) return;
+//                currentDriver.addNewRating(integer);
+                db.collection(Constants.FSUser.userCollection)
+                        .document(currentDriver.getDocId())
+                        .update(Constants.FSUser.rating, currentDriver.getRating())
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                System.out.println("Update Rating success");
+                            }
+                        });
+                resetBookingFlow();
+            }
+        });
     }
 
     /*************************************************** For booking synchronization *****************************************************/
@@ -608,9 +623,12 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
 
     private void loadCustomerRatingFragment() {
         //Load customer rating fragment
-        RatingFragment ratingFragment = new RatingFragment();
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.booking_info, ratingFragment).commit();
+//        RatingFragment ratingFragment = new RatingFragment();
+//        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+//        transaction.replace(R.id.booking_info, ratingFragment).commit();
+        FragmentManager fm = getChildFragmentManager();
+        RatingFragment ratingFragment = RatingFragment.newInstance();
+        ratingFragment.show(fm, "fragment_feedback_rating");
     }
 
     private void createNewBookingInDB() {
@@ -657,7 +675,6 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         PopupDriverArrivalViewModel popupDriverArrivalViewModel = ViewModelProviders.of(requireActivity()).get(PopupDriverArrivalViewModel.class);
         popupDriverArrivalViewModel.setDriver(currentDriver);
     }
-
 
     private void setDetectAcceptedDriver() {
         currentBookingListener = currentBookingDocRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -735,7 +752,7 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
 
         }
 
-        currentDriverListener = db.collection(Constants.FSUser.userCollection)
+        currentDriverListener = db.collection(Constants.FSDriverLocation.driverLocationCollection)
                 .document(currentDriver.getDocId())
                 .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
@@ -748,20 +765,20 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
                         if (value != null && value.exists()) {
                             System.out.println("cai loz maaaaaaaaaaaaaaaaa333333333333333");
 
-
-                            User driver = value.toObject(User.class);
+                            DriverLocation driverLocation = value.toObject(DriverLocation.class);
                             if (currentDriverLocationMarker != null) {
                                 currentDriverLocationMarker.remove();
                                 currentDriverLocationMarker = null;
                             }
 
                             System.out.println("CLCLCLCLCLCLCLCLCLCLCLCLL");
-                            System.out.println(driver.getCurrentPositionLatitude());
-                            System.out.println(driver.getCurrentPositionLongitude());
+                            System.out.println(driverLocation.getCurrentPositionLatitude());
+                            System.out.println(driverLocation.getCurrentPositionLongitude());
 
                             currentDriverLocationMarker = mMap.addMarker(
                                     new MarkerOptions()
-                                            .position(new LatLng(driver.getCurrentPositionLatitude(), driver.getCurrentPositionLongitude()))
+                                            .position(new LatLng(driverLocation.getCurrentPositionLatitude(),
+                                                    driverLocation.getCurrentPositionLongitude()))
                                             .icon(bitmapDescriptorFromVector(
                                                     getActivity(),
                                                     resourceType, Color.RED)

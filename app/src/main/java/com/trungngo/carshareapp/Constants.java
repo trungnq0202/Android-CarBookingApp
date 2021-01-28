@@ -52,6 +52,13 @@ public class Constants {
 
     }
 
+    public static class FSDriverLocation {
+        public static final String driverLocationCollection = "driverLocations";
+        public static final String currentPositionLatitude = "currentPositionLatitude";
+        public static final String currentPositionLongitude = "currentPositionLongitude";
+
+
+    }
 
 
     //All Toast messages being used

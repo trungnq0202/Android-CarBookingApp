@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         Menu menu = navigationView.getMenu();
 
         //Hide according menu and Navigate to the right fragment based on
-        if (currentUserObject.isCustomer()){
+        if (currentUserObject.getRole().equals("Customer")){
             MenuItem driverHomeMenuItem = menu.getItem(1);
             driverHomeMenuItem.setVisible(false);
             navController.navigate(R.id.nav_customer_home);
@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
      * Send current user data through child fragments' view models
      */
     private void setAllChildFragmentsViewModelData() {
-        if (currentUserObject.isCustomer()){
+        if (currentUserObject.getRole().equals("Customer")){
             customerHomeViewModel.setCurrentUserObject(currentUserObject);
         } else {
             driverHomeViewModel.setCurrentUserObject(currentUserObject);

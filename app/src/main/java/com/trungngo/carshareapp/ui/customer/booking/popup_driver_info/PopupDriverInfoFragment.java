@@ -56,6 +56,15 @@ public class PopupDriverInfoFragment extends DialogFragment {
     private void setDriverInfo(){
         driverUsernameTextView.setText(driver.getUsername());
         plateNumberAndBike.setText(driver.getVehiclePlateNumber() + " ● " + driver.getTransportationType());
+        ratingBar.setRating(getRatingAverage(driver));
+    }
+
+    public float getRatingAverage(User driver) {
+        double total = 0;
+        for (int _rating : driver.getRating()) {
+            total += _rating;
+        }
+        return (float) (total / driver.getRating().size());
     }
 
     @Override

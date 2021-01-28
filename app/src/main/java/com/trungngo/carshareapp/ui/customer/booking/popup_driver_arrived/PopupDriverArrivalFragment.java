@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -26,6 +27,8 @@ public class PopupDriverArrivalFragment extends DialogFragment {
     private TextView driverUsernameTextView;
     private TextView vehicleInfo;
 
+    private Button closeBtn;
+
     public static PopupDriverArrivalFragment newInstance() {
         return new PopupDriverArrivalFragment();
     }
@@ -36,18 +39,27 @@ public class PopupDriverArrivalFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.fragment_pop_up_driver_arrival, container, false);
         linkViewElements(view);
 
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+
         return view;
     }
 
     private void linkViewElements(View rootView){
         driverUsernameTextView = rootView.findViewById(R.id.driverUsernameTextView);
         vehicleInfo = rootView.findViewById(R.id.vehicleInfo);
+        closeBtn = rootView.findViewById(R.id.closeBtn);
     }
 
     @SuppressLint("SetTextI18n")
     private void setDriverInfo(User driver){
         driverUsernameTextView.setText(driver.getUsername());
         vehicleInfo.setText(driver.getVehiclePlateNumber() + " ● " + driver.getTransportationType());
+
     }
 
     @Override

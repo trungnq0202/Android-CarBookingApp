@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.trungngo.carshareapp.Constants;
 import com.trungngo.carshareapp.R;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class RegisterActivity extends AppCompatActivity {

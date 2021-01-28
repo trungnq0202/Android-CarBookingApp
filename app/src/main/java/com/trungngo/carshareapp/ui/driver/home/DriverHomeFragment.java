@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,6 +72,7 @@ import com.trungngo.carshareapp.Constants;
 import com.trungngo.carshareapp.R;
 import com.trungngo.carshareapp.activities.MainActivity;
 import com.trungngo.carshareapp.model.Booking;
+import com.trungngo.carshareapp.model.DriverLocation;
 import com.trungngo.carshareapp.model.User;
 import com.trungngo.carshareapp.ui.customer.booking.dropoff.DropoffFragment;
 import com.trungngo.carshareapp.ui.customer.home.CustomerHomeViewModel;
@@ -78,6 +80,8 @@ import com.trungngo.carshareapp.ui.driver.alert.DriverAlertFragment;
 import com.trungngo.carshareapp.ui.driver.alert.DriverAlertViewModel;
 import com.trungngo.carshareapp.ui.driver.driver_info.DriverInfoFragment;
 import com.trungngo.carshareapp.ui.driver.driver_info.DriverInfoViewModel;
+import com.trungngo.carshareapp.ui.driver.process_booking.DriverProcessBookingFragment;
+import com.trungngo.carshareapp.ui.driver.process_booking.DriverProcessBookingViewModel;
 
 import java.util.ArrayList;
 
@@ -162,7 +166,6 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -224,7 +227,7 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
                                 location.getLongitude());
                         updateCurrentUserLocationMarker(latLng);
 //                        updateCurrentRoute();
-                        updateCurrentDriverLocationOnDB(latLng);
+                        updateCurrentDriverLocationOnDB(latLng); //TODO change this shitttttt
 
                     }
                 }
@@ -257,11 +260,16 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void updateCurrentDriverLocationOnDB(LatLng newLatLng){
-        currentUserObject.setCurrentPositionLatitude(newLatLng.latitude);
-        currentUserObject.setCurrentPositionLongitude(newLatLng.longitude);
-        db.collection(Constants.FSUser.userCollection)
+//        currentUserObject.setCurrentPositionLatitude(newLatLng.latitude);
+//        currentUserObject.setCurrentPositionLongitude(newLatLng.longitude);
+
+        DriverLocation driverLocation = new DriverLocation();
+        driverLocation.setCurrentPositionLatitude(newLatLng.latitude);
+        driverLocation.setCurrentPositionLongitude(newLatLng.longitude);
+
+        db.collection(Constants.FSDriverLocation.driverLocationCollection)
                 .document(currentUserObject.getDocId())
-                .set(currentUserObject)
+                .set(driverLocation)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -357,7 +365,8 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
 
                         for (QueryDocumentSnapshot doc : value) {
                             Booking booking = doc.toObject(Booking.class);
-                            if (booking.getAvailable()) {
+                            //This booking is available and matches transportation type
+                            if (booking.getAvailable() && booking.getTransportationType().equals(currentUserObject.getTransportationType())) {
                                 currentBookingDocRef = doc.getReference();
                                 sendDataToAlertViewModel(booking);
                                 loadDriverAlertFragment();
@@ -408,15 +417,30 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
         checkBookingStillAvailable();
     }
 
+    private void sendDataToDriverProcessBookingViewModel() {
+        DriverProcessBookingViewModel driverProcessBookingViewModel = ViewModelProviders.of(requireActivity()).get(DriverProcessBookingViewModel.class);
+        driverProcessBookingViewModel.setCurrentUserObject(currentUserObject);
+        driverProcessBookingViewModel.setCurrentBookingDocRef(currentBookingDocRef);
+    }
+
+    private void loadDriverProcessBookingFragment(){
+        Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.nav_driver_booking);
+    }
+
     private void setDriverOfCurrentBooking() {
         currentBookingDocRef.update(
-                Constants.FSBooking.driver,
-                currentUserObject
-        );
-
-        //TODO move to DriverBookingFragment
-
+                Constants.FSBooking.driver, currentUserObject,
+                Constants.FSBooking.available, false
+        ).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                //TODO move to DriverBookingFragment
+                sendDataToDriverProcessBookingViewModel();
+                loadDriverProcessBookingFragment();
+            }
+        });
     }
+
 
 
     @Override
@@ -426,6 +450,7 @@ public class DriverHomeFragment extends Fragment implements OnMapReadyCallback {
         driverHomeViewModel.getCurrentUserObject().observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
             public void onChanged(User user) {
+                if (user == null) return;
                 currentUserObject = user;
                 sendDriverInfoDataToViewModel();
             }
