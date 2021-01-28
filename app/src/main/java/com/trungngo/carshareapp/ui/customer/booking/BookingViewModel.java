@@ -10,12 +10,23 @@ public class BookingViewModel extends ViewModel {
     private MutableLiveData<User> currentUserObject;
     private MutableLiveData<Place> customerSelectedDropOffPlace;
     private MutableLiveData<Place> customerSelectedPickupPlace;
+    private MutableLiveData<String> transportationType;
 
 
     public BookingViewModel() {
         currentUserObject = new MutableLiveData<>();
         customerSelectedDropOffPlace = new MutableLiveData<>();
         customerSelectedPickupPlace = new MutableLiveData<>();
+        transportationType = new MutableLiveData<>();
+
+    }
+
+    public MutableLiveData<String> getTransportationType() {
+        return transportationType;
+    }
+
+    public void setTransportationType(String transportationType) {
+        this.transportationType.setValue(transportationType);
     }
 
     public void setCurrentUserObject(User currentUserObject) {

@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.trungngo.carshareapp.Constants;
@@ -22,10 +23,13 @@ import com.trungngo.carshareapp.R;
 import java.util.Calendar;
 
 public class RegisterActivity extends AppCompatActivity {
-    EditText birthDateEditText, usernameEditText, phoneEditText;
+    EditText birthDateEditText, usernameEditText, phoneEditText, registerVehiclePlateNumberEditText;
     Button backBtn, nextBtn, datePickerBtn;
     RadioButton maleRadioBtn, femaleRadioBtn;
+    RadioGroup roleGroup;
     RadioButton driverRadioBtn, customerRadioBtn;
+    RadioGroup transportationTypeGroup;
+    RadioButton registerCarRadioBtn, registerBikeRadioBtn;
     private int year, month, day;
 
     @Override
@@ -33,6 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         linkViewElements();
+        setRoleGroupBtnActionHandler();
         setBackBtnAction();
         setDatePickerBtnAction();
         setNextBtnAction();
@@ -49,9 +54,34 @@ public class RegisterActivity extends AppCompatActivity {
         datePickerBtn = (Button) findViewById(R.id.registerPickdateBtn);
         maleRadioBtn = (RadioButton) findViewById(R.id.registerMaleRadioBtn);
         femaleRadioBtn = (RadioButton) findViewById(R.id.registerFemaleRadioBtn);
+        roleGroup = (RadioGroup) findViewById(R.id.roleGroup);
         customerRadioBtn = (RadioButton) findViewById(R.id.registerCustomerRadioBtn);
         driverRadioBtn = (RadioButton) findViewById(R.id.registerDriverRadioBtn);
+        transportationTypeGroup = (RadioGroup) findViewById(R.id.transportationTypeGroup);
+        registerCarRadioBtn = (RadioButton) findViewById(R.id.registerCarRadioBtn);
+        registerBikeRadioBtn = (RadioButton) findViewById(R.id.registerBikeRadioBtn);
+        registerVehiclePlateNumberEditText = (EditText) findViewById(R.id.registerVehiclePlateNumberEditText);
+    }
 
+    private void setRoleGroupBtnActionHandler() {
+        roleGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @SuppressLint("NonConstantResourceId")
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch(checkedId)
+                {
+                    case R.id.registerCustomerRadioBtn:
+                        transportationTypeGroup.setVisibility(View.INVISIBLE);
+                        registerVehiclePlateNumberEditText.setVisibility(View.INVISIBLE);
+                        break;
+                    case R.id.registerDriverRadioBtn:
+                        transportationTypeGroup.setVisibility(View.VISIBLE);
+                        registerVehiclePlateNumberEditText.setVisibility(View.VISIBLE);
+                        break;
+
+                }
+            }
+        });
     }
 
     //Move back to startActivity when pressing 'back' button
@@ -76,6 +106,11 @@ public class RegisterActivity extends AppCompatActivity {
                 String birthDate = birthDateEditText.getText().toString();
                 String gender = maleRadioBtn.isChecked() ? "Male" : "Female";
                 String role = customerRadioBtn.isChecked() ? "Customer" : "Driver";
+                String transportationType = "";
+                if (driverRadioBtn.isChecked()) {
+                    transportationType = registerCarRadioBtn.isChecked() ? "car" : "bike";
+                }
+                String vehiclePlateNumber = registerVehiclePlateNumberEditText.getText().toString();
 
                 //Check empty input
                 if (checkEmptyInput(username, phone, birthDate)) {
@@ -88,6 +123,8 @@ public class RegisterActivity extends AppCompatActivity {
                     i.putExtra(Constants.FSUser.birthDateField, birthDate);
                     i.putExtra(Constants.FSUser.genderField, gender);
                     i.putExtra(Constants.FSUser.roleField, role);
+                    i.putExtra(Constants.FSUser.transportationType, transportationType);
+                    i.putExtra(Constants.FSUser.vehiclePlateNumber, vehiclePlateNumber);
                     startActivity(i);
                     finish();
                 }

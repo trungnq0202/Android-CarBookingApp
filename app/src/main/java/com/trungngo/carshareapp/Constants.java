@@ -1,11 +1,18 @@
 package com.trungngo.carshareapp;
 
 public class Constants {
-    public static class TransportationType{
-        public static final String carType = "car";
-        public static final String bikeType = "bike";
+    public static class Transportation{
+        public static class Type {
+            public static final String carType = "car";
+            public static final String bikeType = "bike";
+        }
 
+        public static class UnitPrice {
+            public static final double carType = 5000.0;
+            public static final double bikeType = 3000.0;
+        }
     }
+
 
     //Fields of FireStore 'users' collection
     public static class FSUser {
@@ -16,8 +23,9 @@ public class Constants {
         public static final String genderField = "gender";
         public static final String emailField = "email";
         public static final String roleField = "role";
-        public static final String ownSitesIdField = "ownSitesId";
-        public static final String participatingSitesIdField = "participatingSitesId";
+        public static final String transportationType = "transportationType";
+        public static final String vehiclePlateNumber = "vehiclePlateNumber";
+        public static final String rating = "rating";
 
         public static final String roleCustomerVal = "Customer";
         public static final String roleDriverVal = "Driver";
@@ -90,7 +98,11 @@ public class Constants {
         public static class CameraZoomLevel {
             public static final int city = 10;
             public static final int streets = 15;
+            public static final int buildings = 20;
+
             public static final float betweenCityAndStreets = (float) 12.5;
+            public static final float betweenStreetsAndBuildings = (float) 17.5;
+
         }
 
         public static class DirectionApi {

@@ -33,7 +33,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
     Button backBtn, registerBtn;
     EditText emailEditText, passwordEditText;
 
-    private String username, phone, birthDate, gender, role;
+    private String username, phone, birthDate, gender, role, transportationType, vehiclePlateNumber;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
@@ -77,6 +77,8 @@ public class RegisterFinalActivity extends AppCompatActivity {
         birthDate = (String) intent.getExtras().get(Constants.FSUser.birthDateField);
         gender = (String) intent.getExtras().get(Constants.FSUser.genderField);
         role = (String) intent.getExtras().get(Constants.FSUser.roleField);
+        transportationType = (String) intent.getExtras().get(Constants.FSUser.transportationType);
+        vehiclePlateNumber = (String) intent.getExtras().get(Constants.FSUser.vehiclePlateNumber);
     }
 
     //Save user data to 'users' collection on firebase
@@ -99,6 +101,10 @@ public class RegisterFinalActivity extends AppCompatActivity {
         data.put(Constants.FSUser.genderField, gender);
         data.put(Constants.FSUser.emailField, emailEditText.getText().toString());
         data.put(Constants.FSUser.roleField, role);
+        data.put(Constants.FSUser.transportationType, transportationType);
+        data.put(Constants.FSUser.vehiclePlateNumber, vehiclePlateNumber);
+        data.put(Constants.FSUser.rating, 5.0);
+
 
         db.collection(Constants.FSUser.userCollection).add(data);
     }

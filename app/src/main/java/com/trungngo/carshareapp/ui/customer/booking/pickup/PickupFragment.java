@@ -87,6 +87,12 @@ public class PickupFragment extends Fragment {
                 ));
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        autocompleteFragment.setOnPlaceSelectedListener(null);
+    }
+
     /**
      * Set up a PlaceSelectionListener to handle the response
      */

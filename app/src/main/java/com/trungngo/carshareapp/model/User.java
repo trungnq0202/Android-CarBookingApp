@@ -15,11 +15,15 @@ public class User {
     private String gender;
     private String email;
     private String role;
+    private String transportationType;
+    private String vehiclePlateNumber;
+    private Double rating;
+
 
     public User() {
     }
 
-    public User(String docId, String username, String phone, Date birthDate, String gender, String email, String role) {
+    public User(String docId, String username, String phone, Date birthDate, String gender, String email, String role, String transportationType, String vehiclePlateNumber, Double rating) {
         this.docId = docId;
         this.username = username;
         this.phone = phone;
@@ -27,6 +31,9 @@ public class User {
         this.gender = gender;
         this.email = email;
         this.role = role;
+        this.transportationType = transportationType;
+        this.vehiclePlateNumber = vehiclePlateNumber;
+        this.rating = rating;
     }
 
     public boolean isCustomer(){
@@ -87,5 +94,29 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getTransportationType() {
+        return transportationType;
+    }
+
+    public void setTransportationType(String transportationType) {
+        this.transportationType = transportationType;
+    }
+
+    public String getVehiclePlateNumber() {
+        return vehiclePlateNumber;
+    }
+
+    public void setVehiclePlateNumber(String vehiclePlateNumber) {
+        this.vehiclePlateNumber = vehiclePlateNumber;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
     }
 }

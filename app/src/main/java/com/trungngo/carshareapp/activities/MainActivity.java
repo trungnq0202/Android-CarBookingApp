@@ -27,6 +27,7 @@ import com.trungngo.carshareapp.ui.driver.home.DriverHomeViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -177,12 +178,12 @@ public class MainActivity extends AppCompatActivity {
      * Init all child fragments' view models
      */
     private void initAllChildFragmentsViewModel() {
-        customerHomeViewModel = ViewModelProviders.of(this).get(CustomerHomeViewModel.class);
-        driverHomeViewModel = ViewModelProviders.of(this).get(DriverHomeViewModel.class);
-        dropoffViewModel = ViewModelProviders.of(this).get(DropoffViewModel.class);
-        pickupViewModel = ViewModelProviders.of(this).get(PickupViewModel.class);
-        bookingViewModel = ViewModelProviders.of(this).get(BookingViewModel.class);
-        checkoutViewModel = ViewModelProviders.of(this).get(CheckoutViewModel.class);
+        customerHomeViewModel = new ViewModelProvider(this).get(CustomerHomeViewModel.class);
+        driverHomeViewModel = new ViewModelProvider(this).get(DriverHomeViewModel.class);
+        dropoffViewModel = new ViewModelProvider(this).get(DropoffViewModel.class);
+        pickupViewModel = new ViewModelProvider(this).get(PickupViewModel.class);
+        bookingViewModel = new ViewModelProvider(this).get(BookingViewModel.class);
+        checkoutViewModel = new ViewModelProvider(this).get(CheckoutViewModel.class);
     }
 
     /**
@@ -205,7 +206,6 @@ public class MainActivity extends AppCompatActivity {
         dropoffViewModel.setCurrentUserObject(currentUserObject);
         pickupViewModel.setCurrentUserObject(currentUserObject);
         bookingViewModel.setCurrentUserObject(currentUserObject);
-
     }
 
     @Override

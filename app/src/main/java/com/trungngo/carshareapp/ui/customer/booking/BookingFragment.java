@@ -5,7 +5,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -16,6 +15,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -42,14 +42,15 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -59,10 +60,23 @@ import com.trungngo.carshareapp.Constants;
 import com.trungngo.carshareapp.R;
 import com.trungngo.carshareapp.model.GoogleMaps.MyClusterItem;
 import com.trungngo.carshareapp.model.User;
+import com.trungngo.carshareapp.ui.customer.booking.checkout.CheckoutFragment;
+import com.trungngo.carshareapp.ui.customer.booking.checkout.CheckoutViewModel;
 import com.trungngo.carshareapp.ui.customer.booking.dropoff.DropoffFragment;
 import com.trungngo.carshareapp.ui.customer.booking.pickup.PickupFragment;
+import com.trungngo.carshareapp.utilities.DirectionsJSONParser;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class BookingFragment extends Fragment implements OnMapReadyCallback {
@@ -82,7 +96,10 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap mMap;
     private FusedLocationProviderClient locationClient;
     private LocationRequest locationRequest;
+    private Marker currentPickupLocationMarker;
+    private Marker currentDropOffLocationMarker;
     private Marker currentUserLocationMarker;
+    private Location currentUserLocation;
     private LatLng prevUserLocation;
     private MyClusterItem currentTargetLocationClusterItem;
     private LatLng prevTargetLocation;
@@ -99,6 +116,8 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
     //Booking info
     Place customerDropOffPlace;
     Place customerPickupPlace;
+    String transportationType;
+    Double distanceInKm;
 
     public static BookingFragment newInstance() {
         return new BookingFragment();
@@ -117,13 +136,15 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_booking, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_customer_booking, container, false);
         linkViewElements(view); //Link view elements to class properties
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         currentUser = mAuth.getCurrentUser();
         initMapsFragment();
         setActionHandlers();
+
 
         return view;
     }
@@ -149,25 +170,84 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         restartBookingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Remove current route
+                removeCurrentRoute();
                 //Go back to the picking drop-off place step
-                loadDropOffPlacePicker();
+                loadDropOffPlacePickerFragment();
                 //Hide back btn
                 restartBookingBtn.setVisibility(View.GONE);
             }
         });
     }
 
-    private void loadDropOffPlacePicker(){
+    private void loadDropOffPlacePickerFragment(){
+        //Clear pickup/drop-off markers if exists
+        if (currentPickupLocationMarker != null){
+            currentPickupLocationMarker.remove();
+            currentPickupLocationMarker = null;
+        }
+
+        if (currentDropOffLocationMarker != null){
+            currentDropOffLocationMarker.remove();
+            currentDropOffLocationMarker = null;
+        }
+
+        //Load drop-off picker fragment
         DropoffFragment dropoffFragment = new DropoffFragment();
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.booking_info, dropoffFragment).commit();
     }
 
-    private void loadPickupPlacePicker(){
+    private void loadPickupPlacePickerFragment(){
         PickupFragment pickupFragment = new PickupFragment();
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.booking_info, pickupFragment).commit();
     }
+
+    private void loadCheckoutFragment(){
+        CheckoutFragment checkoutFragment = new CheckoutFragment();
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.booking_info, checkoutFragment).commit();
+    }
+
+    private void drawDropOffAndPickupMarkers(){
+        currentPickupLocationMarker = mMap.addMarker( new MarkerOptions()
+                .position(Objects.requireNonNull(customerPickupPlace.getLatLng()))
+                .icon(bitmapDescriptorFromVector(
+                        getActivity(),
+                        R.drawable.ic_location_blue, Color.BLUE)
+                )
+                .title(customerPickupPlace.getAddress()));
+
+        currentDropOffLocationMarker = mMap.addMarker(new MarkerOptions()
+                .position(customerDropOffPlace.getLatLng())
+                .icon(bitmapDescriptorFromVector(
+                        getActivity(),
+                        R.drawable.ic_location_red, Color.RED)
+                )
+                .title(customerDropOffPlace.getAddress()));
+
+        currentPickupLocationMarker.showInfoWindow();
+        currentDropOffLocationMarker.showInfoWindow();
+
+        //Smoothly move camera to include 2 points in the map
+        LatLngBounds.Builder latLngBounds = new LatLngBounds.Builder();
+        latLngBounds.include(customerDropOffPlace.getLatLng());
+        latLngBounds.include(customerPickupPlace.getLatLng());
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), 200));
+    }
+
+    private void drawRouteFromPickupToDropOff(){
+        // Checks, whether start and end locations are captured
+        // Getting URL to the Google Directions API
+        String url = getRouteUrl(customerPickupPlace.getLatLng(), customerDropOffPlace.getLatLng(), "driving");
+
+        FetchRouteDataTask fetchRouteDataTask = new FetchRouteDataTask();
+
+        // Start fetching json data from Google Directions API
+        fetchRouteDataTask.execute(url);
+    }
+
 
     /**
      * //Find My location Button listener
@@ -212,6 +292,7 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
                             return;
                         }
                         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        currentUserLocation = location;
                         if (currentUserLocationMarker == null) {
                             updateCurrentUserLocationMarker(latLng);
                         }
@@ -264,7 +345,7 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        loadDropOffPlacePicker();
+        loadDropOffPlacePickerFragment();
     }
 
     /**
@@ -274,30 +355,6 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         ActivityCompat.requestPermissions(getActivity(),
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                 MY_LOCATION_REQUEST);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(requireActivity()).get(BookingViewModel.class);
-        mViewModel.getCurrentUserObject().observe(requireActivity(), new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                currentUserObject = user;
-            }
-        });
-
-        //Action handler when customer's chosen drop off place is selected
-        mViewModel.getCustomerSelectedDropOffPlace().observe(requireActivity(), new Observer<Place>() {
-            @Override
-            public void onChanged(Place place) {
-                customerDropOffPlace = place;
-                restartBookingBtn.setVisibility(View.VISIBLE); //Show back button
-
-                //TODO Move to customerPickUpPlace fragment
-                loadPickupPlacePicker();
-            }
-        });
     }
 
     /**
@@ -325,7 +382,6 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
                 , null);
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         String apiKey = getString(R.string.google_maps_key);
@@ -340,5 +396,234 @@ public class BookingFragment extends Fragment implements OnMapReadyCallback {
         startLocationUpdate(); //Start location update listener
 //        setUpCluster(); //Set up cluster on Google Map
         onGetPositionClick();  // Position the map.
+    }
+
+    private void removeCurrentRoute(){
+        //Clear current route
+        if (currentRoute.isEmpty()) return;
+        for (Polyline polyline : currentRoute) {
+            polyline.remove();
+        }
+        currentRoute.clear();
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void sendCheckoutInfoToCheckoutFragment(){
+        CheckoutViewModel checkoutViewModel = ViewModelProviders.of(requireActivity()).get(CheckoutViewModel.class);
+        checkoutViewModel.setDistanceInKmString(String.format("%.1fkm", distanceInKm));
+        int price;
+        if (transportationType.equals(Constants.Transportation.Type.bikeType)) {
+            price = (int) (distanceInKm * Constants.Transportation.UnitPrice.bikeType);
+        } else {
+            price = (int) (distanceInKm * Constants.Transportation.UnitPrice.carType);
+        }
+        checkoutViewModel.setPriceInVNDString(price + " VND");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mViewModel.setCustomerSelectedDropOffPlace(null);
+        mViewModel.setCustomerSelectedPickupPlace(null);
+        mViewModel.setTransportationType(null);
+    }
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mViewModel = ViewModelProviders.of(requireActivity()).get(BookingViewModel.class);
+
+        mViewModel.getCurrentUserObject().observe(requireActivity(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                currentUserObject = user;
+            }
+        });
+
+        //Action handler when customer's chosen drop off place is selected
+        mViewModel.getCustomerSelectedDropOffPlace().observe(getViewLifecycleOwner(), new Observer<Place>() {
+            @Override
+            public void onChanged(Place place) {
+                if (place == null) return;
+                customerDropOffPlace = place;
+                restartBookingBtn.setVisibility(View.VISIBLE); //Show back button
+
+                //TODO Move to customerPickUpPlace fragment
+                loadPickupPlacePickerFragment();
+
+                smoothlyMoveCameraToPosition(
+                        new LatLng(currentUserLocation.getLatitude(), currentUserLocation.getLongitude()),
+                        Constants.GoogleMaps.CameraZoomLevel.betweenStreetsAndBuildings);
+            }
+        });
+
+        //Action handler when customer's chosen pickup place is selected
+        mViewModel.getCustomerSelectedPickupPlace().observe(getViewLifecycleOwner(), new Observer<Place>() {
+            @Override
+            public void onChanged(Place place) {
+                if (place == null) return;
+                customerPickupPlace = place;
+
+                //TODO load checkout fragment
+                loadCheckoutFragment();
+
+                //TODO Draw 2 pickup/drop-off markers
+                drawDropOffAndPickupMarkers();
+
+                //TODO Draw route from pickup place to drop-off place
+                drawRouteFromPickupToDropOff();
+            }
+        });
+
+        mViewModel.getTransportationType().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if (s == null) return;
+                transportationType = s;
+            }
+        });
+    }
+
+    private void drawRoute(List<List<HashMap<String, String>>> result) {
+        //Clear current route
+        for (Polyline polyline : currentRoute) {
+            polyline.remove();
+        }
+        currentRoute.clear();
+
+        ArrayList<LatLng> points = null;
+        PolylineOptions lineOptions = null;
+
+        for (int i = 0; i < result.size(); i++) {
+            points = new ArrayList();
+            lineOptions = new PolylineOptions();
+
+            List<HashMap<String, String>> route = result.get(i);
+
+            for (int j = 0; j < route.size(); j++) {
+                HashMap<String, String> point = route.get(j);
+
+                double lat = Double.parseDouble(point.get("lat"));
+                double lng = Double.parseDouble(point.get("lng"));
+                LatLng position = new LatLng(lat, lng);
+
+                points.add(position);
+            }
+
+            lineOptions.addAll(points);
+            lineOptions.width(12);
+            lineOptions.color(Color.RED);
+            lineOptions.geodesic(true);
+
+        }
+
+        // Drawing polyline in the Google Map for the i-th route
+        currentRoute.add(mMap.addPolyline(lineOptions));
+    }
+
+    /**
+     * A Class to call Google Directions API with callback
+     */
+    private class FetchRouteDataTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... url) {
+            String data = "";
+            try {
+                data = fetchDataFromURL(url[0]);
+            } catch (Exception ignored) {
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            RouteParserTask routeParserTask = new RouteParserTask();
+            routeParserTask.execute(result);
+        }
+    }
+
+
+    /**
+     * A class to parse the Google Places in JSON format
+     */
+    private class RouteParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+
+        // Parsing the data in non-ui thread
+        @Override
+        protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
+
+            JSONObject jObject;
+            List<List<HashMap<String, String>>> routes = null;
+
+            try {
+                jObject = new JSONObject(jsonData[0]);
+                DirectionsJSONParser parser = new DirectionsJSONParser(jObject);
+
+                routes = parser.getRoutes();
+
+                distanceInKm = parser.getTotalDistanceInKm();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return routes;
+        }
+
+        @Override
+        protected void onPostExecute(List<List<HashMap<String, String>>> result) {
+            sendCheckoutInfoToCheckoutFragment(); //Send calculated checkout info to checkout fragment
+            drawRoute(result); //Draw new route
+        }
+    }
+
+
+
+    /**
+     * Method to get URL for fetching data from Google Directions API (finding direction from origin to destination)
+     * @param origin
+     * @param destination
+     * @param directionMode
+     * @return
+     */
+    private String getRouteUrl(LatLng origin, LatLng destination, String directionMode) {
+        String originParam = Constants.GoogleMaps.DirectionApi.originParam +
+                "=" + origin.latitude + "," + origin.longitude;
+        String destinationParam = Constants.GoogleMaps.DirectionApi.destinationParam +
+                "=" + destination.latitude + "," + destination.longitude;
+        String modeParam = Constants.GoogleMaps.DirectionApi.modeParam + "=" + directionMode;
+        String params = originParam + "&" + destinationParam + "&" + modeParam;
+        String output = Constants.GoogleMaps.DirectionApi.outputParam;
+        return Constants.GoogleMaps.DirectionApi.baseUrl + output + "?" + params
+                + "&key=" + getString(R.string.google_api_key);
+    }
+
+    /**
+     * A method to fetch json data from url
+     */
+    private String fetchDataFromURL(String strUrl) throws IOException {
+        String data = "";
+        InputStream iStream = null;
+        HttpURLConnection urlConnection = null;
+        try {
+            URL url = new URL(strUrl);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.connect();
+            iStream = urlConnection.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
+            StringBuffer sb = new StringBuffer();
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+            data = sb.toString();
+            br.close();
+        } catch (Exception e) {
+        } finally {
+            iStream.close();
+            urlConnection.disconnect();
+        }
+        return data;
     }
 }

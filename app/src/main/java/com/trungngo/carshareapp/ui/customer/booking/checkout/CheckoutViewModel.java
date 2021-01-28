@@ -8,10 +8,14 @@ import com.trungngo.carshareapp.model.User;
 public class CheckoutViewModel extends ViewModel {
     private MutableLiveData<User> currentUserObject;
     private MutableLiveData<String> transportationType;
+    private MutableLiveData<String> distanceInKmString;
+    private MutableLiveData<String> priceInVNDString;
 
     public CheckoutViewModel() {
         currentUserObject = new MutableLiveData<>();
         transportationType = new MutableLiveData<>();
+        distanceInKmString = new MutableLiveData<>();
+        priceInVNDString = new MutableLiveData<>();
     }
 
     public void setCurrentUserObject(User currentUserObject) {
@@ -20,6 +24,22 @@ public class CheckoutViewModel extends ViewModel {
 
     public void setTransportationType(String transportationType) {
         this.transportationType.setValue(transportationType);
+    }
+
+    public void setPriceInVNDString(String priceInVNDString) {
+        this.priceInVNDString.setValue(priceInVNDString);
+    }
+
+    public void setDistanceInKmString(String distanceInKmString) {
+        this.distanceInKmString.setValue(distanceInKmString);
+    }
+
+    public MutableLiveData<String> getDistanceInKmString() {
+        return distanceInKmString;
+    }
+
+    public MutableLiveData<String> getPriceInVNDString() {
+        return priceInVNDString;
     }
 
     public MutableLiveData<User> getCurrentUserObject(){

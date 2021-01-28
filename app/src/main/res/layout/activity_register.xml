@@ -109,7 +109,8 @@
         <RadioGroup
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:id="@+id/roleGroup">
 
             <RadioButton
                 android:id="@+id/registerCustomerRadioBtn"
@@ -125,6 +126,41 @@
                 android:layout_height="match_parent"
                 android:text="Driver" />
         </RadioGroup>
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:id="@+id/transportationTypeGroup"
+            android:visibility="invisible">
+
+            <RadioButton
+                android:id="@+id/registerCarRadioBtn"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="car" />
+
+            <RadioButton
+                android:id="@+id/registerBikeRadioBtn"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:text="bike" />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/registerVehiclePlateNumberEditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10sp"
+            android:background="#FFFFFF"
+            android:ems="10"
+            android:hint="Vehicle plate number"
+            android:padding="10sp"
+            android:enabled="true"
+            android:visibility="invisible"
+            />
 
         <Button
             android:id="@+id/registerFinalRegisterBtn"

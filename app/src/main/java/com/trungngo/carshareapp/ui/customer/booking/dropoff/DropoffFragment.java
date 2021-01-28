@@ -1,5 +1,6 @@
 package com.trungngo.carshareapp.ui.customer.booking.dropoff;
 
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -20,8 +21,10 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.firebase.auth.FirebaseUser;
 import com.trungngo.carshareapp.Constants;
 import com.trungngo.carshareapp.R;
+import com.trungngo.carshareapp.model.User;
 import com.trungngo.carshareapp.ui.customer.booking.BookingViewModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +38,7 @@ public class DropoffFragment extends Fragment {
     //Places autocomplete
     private PlacesClient placesClient;
     private AutocompleteSupportFragment autocompleteFragment;
+
 
     public static DropoffFragment newInstance() {
         return new DropoffFragment();
@@ -76,8 +80,14 @@ public class DropoffFragment extends Fragment {
         //linkViewElements()
         initGooglePlacesAutocomplete();
         setActionHandlers();
-
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        BookingViewModel bookingViewModel = ViewModelProviders.of(requireActivity()).get(BookingViewModel.class);
+        autocompleteFragment.setOnPlaceSelectedListener(null);
     }
 
     public void setActionHandlers(){
@@ -91,6 +101,7 @@ public class DropoffFragment extends Fragment {
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NotNull Place place) {
+                if (place == null) return;
 //                smoothlyMoveCameraToPosition(place.getLatLng(), Constants.GoogleMaps.CameraZoomLevel.betweenCityAndStreets);
                 //Send customer selected drop off place to booking fragment
                 BookingViewModel bookingViewModel = ViewModelProviders.of(requireActivity()).get(BookingViewModel.class);
@@ -108,8 +119,9 @@ public class DropoffFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(DropoffViewModel.class);
-        // TODO: Use the ViewModel
+        mViewModel = ViewModelProviders.of(requireActivity()).get(DropoffViewModel.class);
+
+
     }
 
 }
