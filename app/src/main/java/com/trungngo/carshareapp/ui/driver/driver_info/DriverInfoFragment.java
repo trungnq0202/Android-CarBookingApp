@@ -55,12 +55,12 @@ public class DriverInfoFragment extends Fragment {
         driverRating = rootView.findViewById(R.id.text_rating);
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "DefaultLocale"})
     private void setDriverInfo() {
         driverName.setText("Username: " + currentUserObject.getUsername());
         vehicleTypeTextView.setText("Vehicle type: " + currentUserObject.getTransportationType());
         vehiclePlateNumberTextView.setText("Plate number: " + currentUserObject.getVehiclePlateNumber());
-        driverRating.setText(Double.toString(getRatingAverage(currentUserObject)));
+        driverRating.setText(String.format("%.1f", getRatingAverage(currentUserObject)));
     }
 
     public float getRatingAverage(User driver) {
